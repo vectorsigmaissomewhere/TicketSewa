@@ -28,6 +28,7 @@ INSTALLED_APPS = [
     'django.contrib.messages',
     'django.contrib.staticfiles',
     'account', 
+    'contributor',
     'rest_framework',
     'corsheaders'
 ]
@@ -176,3 +177,9 @@ EMAIL_HOST_USER = 'anishbro501625@gmail.com'
 # EMAIL_HOST_PASSWORD = os.environ.get('EMAIL_PASSWORD')
 EMAIL_HOST_PASSWORD = 'pdad csms oywv zcge'
 EMAIL_USE_TLS = True
+
+# image url 
+MEDIA_URL = '/media/'
+MEDIA_ROOT = BASE_DIR / 'media'
+
+APPEND_SLASH = False
