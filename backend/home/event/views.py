@@ -7,9 +7,10 @@ from rest_framework.response import Response
 from account.renderers import UserRenderer 
 from rest_framework import status 
 
+from rest_framework.permissions import AllowAny
 
 # list, retreieve and create there is another viewset for deleting and updating 
-class EventModelViewSet(viewsets.viewset):
+class EventModelViewSet(viewsets.ViewSet):
     permission_classes = [AllowAny]
     def list(self, request):
         eventlist = Event.objects.all()
@@ -24,7 +25,30 @@ class EventModelViewSet(viewsets.viewset):
         return Response(serializer.data)
 
     def create(self, request):
-        render_classes = [UserRenderer]
+        # Only authenticated users can create events
         permission_classes = [IsAuthenticated]
-        id = request.user.id 
+
+        # Check if the user is a verified contributor
+        try:
+            contributor = Contributor.objects.get(user=request.user)
+            if not contributor.is_verified:  # Assuming `is_verified` is a field in Contributor
+                return Response(
+                    {'error': 'Only verified contributors can add events'},
+                    status=status.HTTP_403_FORBIDDEN
+                )
+        except Contributor.DoesNotExist:
+            return Response(
+                {'error': 'You are not a contributor. Please register as one.'},
+                status=status.HTTP_403_FORBIDDEN
+            )
+
+        # If the user is verified, proceed with event creation
+        serializer = EventSerializer(data=request.data, context={'request': request})
+        if serializer.is_valid():
+            serializer.save(user=request.user)
+            return Response(
+                {'msg': 'Event created successfully', 'data': serializer.data},
+                status=status.HTTP_201_CREATED
+            )
+        return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
         
