@@ -1,5 +1,6 @@
 from django.shortcuts import render
-from .models import Event 
+from .models import Event
+from contributor.models import Contributor
 from .serializers import EventSerializer 
 from rest_framework import viewsets 
 from rest_framework.permissions import IsAuthenticated 
@@ -31,7 +32,7 @@ class EventModelViewSet(viewsets.ViewSet):
         # Check if the user is a verified contributor
         try:
             contributor = Contributor.objects.get(user=request.user)
-            if not contributor.is_verified:  # Assuming `is_verified` is a field in Contributor
+            if not contributor.verified:  # Assuming `is_verified` is a field in Contributor
                 return Response(
                     {'error': 'Only verified contributors can add events'},
                     status=status.HTTP_403_FORBIDDEN
