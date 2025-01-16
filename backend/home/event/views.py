@@ -7,10 +7,11 @@ from rest_framework.permissions import IsAuthenticated
 from rest_framework.response import Response 
 from account.renderers import UserRenderer 
 from rest_framework import status 
+from django.shortcuts import get_object_or_404
 
 from rest_framework.permissions import AllowAny
 
-# list, retreieve and create there is another viewset for deleting and updating 
+# list, retrieve and create there is another viewset for deleting and updating 
 class EventModelViewSet(viewsets.ViewSet):
     permission_classes = [AllowAny]
     def list(self, request):
@@ -20,19 +21,16 @@ class EventModelViewSet(viewsets.ViewSet):
         return Response(serializer.data)
     
     def retrieve(self, request, pk=None):
-        permission_classes = [AllowAny]
-        id = pk 
-        group = Event.objects.get(event_id=id)
+        event = get_object_or_404(Event, event_id=pk)
+        serializer = EventSerializer(event)
         return Response(serializer.data)
 
     def create(self, request):
-        # Only authenticated users can create events
         permission_classes = [IsAuthenticated]
-
-        # Check if the user is a verified contributor
         try:
             contributor = Contributor.objects.get(user=request.user)
-            if not contributor.verified:  # Assuming `is_verified` is a field in Contributor
+            # check if the contributor is verified or not 
+            if not contributor.verified:  
                 return Response(
                     {'error': 'Only verified contributors can add events'},
                     status=status.HTTP_403_FORBIDDEN
@@ -43,7 +41,7 @@ class EventModelViewSet(viewsets.ViewSet):
                 status=status.HTTP_403_FORBIDDEN
             )
 
-        # If the user is verified, proceed with event creation
+        # check if the user is verified, if its is verified add event 
         serializer = EventSerializer(data=request.data, context={'request': request})
         if serializer.is_valid():
             serializer.save(user=request.user)
@@ -52,4 +50,16 @@ class EventModelViewSet(viewsets.ViewSet):
                 status=status.HTTP_201_CREATED
             )
         return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+
+# list event according to the userid
+class EventContribAuthModelViewSet(viewsets.ViewSet):
+    permission_classes = [AllowAny]
+
+    def list(self, request, user_id=None):
+        # Fetch all events for the given user_id
+        events = Event.objects.filter(user=user_id)
+        if not events.exists():
+            return Response({"detail": "No events found for this user."}, status=status.HTTP_404_NOT_FOUND)
         
+        serializer = EventSerializer(events, many=True)
+        return Response(serializer.data)

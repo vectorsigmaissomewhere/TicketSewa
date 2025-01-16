@@ -76,6 +76,12 @@ const Navbar = () => {
 
         {/* Sign-in/Register */}
         <div className="hidden md:block">
+        <a
+            href="#"
+            className="no-underline text-sm hover:text-blue-400 transition duration-300"
+          >
+            Profile
+          </a>
           <a
             href="#"
             className="no-underline text-sm hover:text-blue-400 transition duration-300"

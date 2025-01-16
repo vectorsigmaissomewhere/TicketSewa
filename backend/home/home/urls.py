@@ -3,7 +3,7 @@ from django.urls import path, include
 from django.conf import settings
 from django.conf.urls.static import static
 from contributor import views 
-from event.views import EventModelViewSet
+from event.views import EventModelViewSet, EventContribAuthModelViewSet
 from rest_framework.routers import DefaultRouter
 
 add_contributor_router = DefaultRouter()
@@ -13,10 +13,14 @@ add_contributor_router.register('addcontributor', views.MakeContributorViewSet, 
 eventviewrouter = DefaultRouter()
 eventviewrouter.register('eventviewapi', EventModelViewSet, basename='eventviewapi')
 
+# Map the GET method to the 'list' action of EventContribAuthModelViewSet
+event_user_view = EventContribAuthModelViewSet.as_view({'get': 'list'})
+
 urlpatterns = [
     path('admin/', admin.site.urls),
     path('api/user/', include('account.urls')),
     path('', include(add_contributor_router.urls)),
     path('', include(eventviewrouter.urls)),
+    path('events/user/<int:user_id>/', event_user_view, name='event-user-list'), # get the event according to the user id 
 
 ]+ static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)
