@@ -1,0 +1,30 @@
+.main-container-addevent {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    background-color: black;
+    color: white;
+    padding-top: 20px;
+    padding-bottom: 20px;
+
+    .main-container-addevent-inner {
+        display: flex; 
+        align-items: center; 
+      }
+
+    .main-container-addevent-inner:hover {
+      color: darkturquoise; 
+    }
+  
+    .cross-icon {
+      cursor: pointer;
+    }
+  
+    p {
+      padding-left: 10px;
+      font-size: 25px;
+      font-family: "Lucida Console", "Courier New", monospace;
+      cursor: pointer;
+    }
+  }
+  

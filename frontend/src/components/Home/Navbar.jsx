@@ -1,4 +1,5 @@
 import React, { useState } from 'react';
+import { Link } from 'react-router-dom';
 
 const Navbar = () => {
   const [menuOpen, setMenuOpen] = useState(true);
@@ -76,18 +77,16 @@ const Navbar = () => {
 
         {/* Sign-in/Register */}
         <div className="hidden md:block">
-        <a
-            href="#"
+        <Link to={'/profile'}><a
             className="no-underline text-sm hover:text-blue-400 transition duration-300"
           >
             Profile
-          </a>
-          <a
-            href="#"
+          </a></Link>
+          <Link to={'/login'}><a
             className="no-underline text-sm hover:text-blue-400 transition duration-300"
           >
             Sign in/Register
-          </a>
+          </a></Link>
         </div>
       </div>
 

@@ -1,4 +1,5 @@
 import React, { useState } from 'react';
+import { Link } from "react-router-dom";
 
 const Profileheading = () => {
   const defaultBg = 'https://static.vecteezy.com/system/resources/thumbnails/033/889/256/small/sunset-on-the-sea-shore-generated-by-ai-photo.jpg';
@@ -17,6 +18,7 @@ const Profileheading = () => {
 
   // Close popup when clicking outside
   document.addEventListener("click", () => setIsPopupVisible(false));
+
 
   return (
     <>
@@ -84,7 +86,7 @@ const Profileheading = () => {
       {isPopupVisible && (
         <div className="absolute top-[200px] right-[40px] bg-white border border-gray-300 rounded-md shadow-md z-[1000] p-3">
           <div className="flex flex-col bg-[#dadce0] p-3 gap-2 shadow-md">
-            <button className="w-[140px] h-[20px] font-sans bg-white border-0 rounded-md cursor-pointer">Settings</button>
+          <Link to="/settings/accountprofile"><button className="w-[140px] h-[20px] font-sans bg-white border-0 rounded-md cursor-pointer">Settings</button></Link>
             <button className="w-[140px] h-[20px] font-sans bg-white border-0 rounded-md cursor-pointer">Logout</button>
           </div>
         </div>

@@ -1,5 +1,6 @@
 import React, { useState } from "react";
 import axios from "axios";
+import { Link } from 'react-router-dom';
 
 const Login = () => {
   const [email, setEmail] = useState("");
@@ -57,9 +58,9 @@ const Login = () => {
           <h2 className="text-xl sm:text-2xl font-bold mb-2">Log In</h2>
           <p className="text-xs sm:text-sm mb-4">
             New to TicketSewa?{" "}
-            <a href="#" className="text-blue-500 underline">
+            <Link to={"/signup"}><a className="text-blue-500 underline">
               Sign Up
-            </a>
+            </a></Link>
           </p>
           {message && (
             <div

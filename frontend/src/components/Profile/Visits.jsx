@@ -1,12 +1,11 @@
 import React from 'react'
 import '../../styles/events.scss'
-import AddEvent from '../Profile/AddEvent'
 
-const Event = () => {
+const Visits = () => {
   return (
     <>
     <div class="contributor-tag">
-    <h2>All Contributor Groups</h2>
+    <h2>Event Visits</h2>
   </div>
   <div class="main-container">
     <div class="main-container-first">
@@ -73,10 +72,8 @@ const Event = () => {
       </div>
     </div>
   </div>
-
-  <AddEvent/>
     </>
   )
 }
 
-export default Event
+export default Visits

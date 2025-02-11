@@ -1,0 +1,137 @@
+// Define individual HSL values
+$shadow-hue: 286deg;
+$shadow-saturation: 36%;
+$shadow-lightness: 58%;
+$shadow-alpha: 0.5;
+
+// Corrected HSLA usage
+$shadow-elevation-medium: 2px 4px 8px hsla($shadow-hue, $shadow-saturation, $shadow-lightness, $shadow-alpha);
+
+// Global Styles
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+  font-family: Arial, sans-serif;
+}
+
+body {
+  background-color: #f3f4f6;
+}
+
+// Contributor Tag
+.contributor-tag {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  margin: 25px 0;
+}
+
+// Main Container
+.main-container {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 20px;
+  justify-content: space-evenly;
+  padding: 20px;
+}
+
+// Card Styles
+.main-container-first {
+  width: 250px;
+  height: 350px; // Increased height to accommodate text & buttons
+  background: linear-gradient(
+    90deg,
+    rgba(2, 0, 36, 1) 0%,
+    rgba(9, 9, 121, 1) 35%,
+    rgba(0, 212, 255, 1) 100%
+  );
+  border-radius: 10px;
+  overflow: hidden;
+  display: flex;
+  flex-direction: column;
+  color: white;
+  position: relative;
+  transition: transform 0.3s ease-in-out;
+
+  &:hover {
+    transform: scale(1.1);
+    box-shadow: $shadow-elevation-medium;
+    cursor: pointer;
+  }
+}
+
+// Image Container
+.main-container-image {
+  width: 100%;
+  height: 60%; // Takes up 60% of the div
+
+  img {
+    width: 100%;
+    height: 100%;
+    object-fit: contain;
+  }
+}
+
+// Content
+.content {
+  padding: 10px;
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+}
+
+// Title
+.title {
+  font-size: 16px;
+  font-weight: bold;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+// Time
+.time {
+  font-size: 14px;
+  opacity: 0.8;
+  margin: 5px 0;
+}
+
+// Buttons Container
+.buttons {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+// Buttons
+.update-btn {
+  background: orange;
+  color: white;
+  border: none;
+  padding: 5px 10px;
+  font-size: 14px;
+  cursor: pointer;
+  border-radius: 5px;
+}
+
+.event-btn {
+  background: blue;
+  color: white;
+  border: none;
+  padding: 8px;
+  width: 100%;
+  font-size: 14px;
+  font-weight: bold;
+  cursor: pointer;
+  border-radius: 5px;
+  margin-top: 5px;
+}
+
+// Responsive Fix
+@media (max-width: 600px) {
+  .main-container-first {
+    width: 100%;
+  }
+}

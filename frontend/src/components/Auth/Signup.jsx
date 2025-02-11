@@ -1,5 +1,6 @@
 import React, { useState } from "react";
 import axios from "axios";
+import { Link } from 'react-router-dom';
 
 const Signup = () => {
   const [email, setEmail] = useState("");
@@ -71,9 +72,9 @@ const Signup = () => {
           <h2 className="text-xl sm:text-2xl font-bold mb-2">Sign Up</h2>
           <p className="text-xs sm:text-sm mb-4">
             Create a Ticketsewa account. Already have an account?{" "}
-            <a href="#" className="text-blue-500 underline">
+            <Link to={'/login'}><a className="text-blue-500 underline">
               Sign In
-            </a>
+            </a></Link>
           </p>
           {message && (
             <div
