@@ -1,6 +1,7 @@
 import React from 'react'
 import '../../styles/events.scss'
 import AddEvent from '../Profile/AddEvent'
+import BecomeContributor from '../Profile/BecomeContributor'
 
 const Event = () => {
   return (
@@ -73,7 +74,7 @@ const Event = () => {
       </div>
     </div>
   </div>
-
+  <BecomeContributor />
   <AddEvent/>
     </>
   )
