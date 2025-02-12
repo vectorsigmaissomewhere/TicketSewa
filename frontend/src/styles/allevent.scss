@@ -1,0 +1,89 @@
+.main-container-eventlist {
+    display: flex;
+    flex-direction: row;
+    margin-left: 10%;
+    margin-right: 10%;
+
+    .main-container-eventlist-filter {
+        width: 30%;
+        background-color: rgb(230, 230, 230);
+
+        .filter-content {
+            display: flex;
+            flex-direction: column;
+
+            p {
+                display: flex;
+                font-size: 20px;
+                font-weight: 600;
+                font-family: Arial, Helvetica, sans-serif;
+                justify-content: center;
+                align-items: center;
+            }
+
+            label {
+                margin-left: 20px;
+                font-family: Arial, sans-serif;
+                font-size: 14px;
+                font-weight: 600;
+                color: #333;
+            }
+
+            input {
+                width: 75%;
+                margin-left: 20px;
+                font-size: 14px;
+                font-weight: 400;
+                font-family: Arial, sans-serif;
+                border: 1px solid #ccc;
+                border-radius: 5px;
+                outline: none;
+            }
+        }
+    }
+
+    .main-container-eventlist-event {
+        width: 70%;
+        background-color: rgb(192, 190, 190);
+
+        .heading-name {
+            display: flex;
+            font-size: 20px;
+            font-weight: 600;
+            font-family: Arial, Helvetica, sans-serif;
+            justify-content: center;
+            align-items: center;
+        }
+    }
+}
+
+.like {
+    display: flex;
+    justify-content: flex-end;
+}
+
+.like:hover {
+    cursor: pointer;
+    color: red;
+}
+
+@media screen and (max-width: 713px) {
+    .main-container-eventlist {
+        flex-direction: column;
+        .main-container-eventlist-filter {
+            width: 100%;
+            background-color: rgb(230, 230, 230);
+
+            button{
+                margin-bottom: 20px;
+            }
+        }
+        .main-container-eventlist-event {
+            width: 100%;
+        }
+    }
+    .main-container-first{
+        width: 100%;
+        height: 500px;
+    }
+}
