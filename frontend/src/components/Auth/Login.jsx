@@ -1,6 +1,6 @@
 import React, { useState } from "react";
 import axios from "axios";
-import { Link } from 'react-router-dom';
+import { Link, useNavigate } from 'react-router-dom';
 
 const Login = () => {
   const [email, setEmail] = useState("");
@@ -8,6 +8,7 @@ const Login = () => {
   const [message, setMessage] = useState("");
   const [errorMessage, setErrorMessage] = useState("");
   const [errors, setErrors] = useState({});
+  const navigate = useNavigate();
 
   const handleSubmit = (e) => {
     e.preventDefault();
@@ -26,6 +27,9 @@ const Login = () => {
         setMessage("Login Successful");
         setErrors({});
         console.log("User logged in successfully:", response.data);
+        const { token, user} = response.data;
+        localStorage.setItem('authToken', token.access);
+        navigate('/')
       })
       .catch((error) => {
         console.error("Error during login:", error);

@@ -74,7 +74,7 @@ DATABASES = {
         'ENGINE': 'django.db.backends.mysql',
         'NAME': 'ticketsewa',
         'USER': 'root',
-        'PASSWORD': 'admin',
+        'PASSWORD': 'Admin@123',
         'HOST': 'localhost',
         'PORT': '3306',
     }
@@ -135,13 +135,17 @@ REST_FRAMEWORK = {
     'DEFAULT_AUTHENTICATION_CLASSES':(
         'rest_framework_simplejwt.authentication.JWTAuthentication',
     ),
+    'DEFAULT_PERMISSION_CLASSES': [
+        'rest_framework.permissions.AllowAny',
+    ]
+
 
     #'DEFAULT_RENDERER_CLASSES':('rest_framework.renderers.JSONRenderer',) # removing browsable api   
 }
 
 # SIMPLE JWT AUTHENTICATION
 SIMPLE_JWT = {
-    "ACCESS_TOKEN_LIFETIME": timedelta(minutes=20),
+    "ACCESS_TOKEN_LIFETIME": timedelta(days=100),
     "REFRESH_TOKEN_LIFETIME": timedelta(days=1),
 
     "AUTH_HEADER_TYPES": ("Bearer",),

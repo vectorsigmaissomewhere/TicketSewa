@@ -8,8 +8,10 @@ from rest_framework.response import Response
 from account.renderers import UserRenderer 
 from rest_framework import status 
 from django.shortcuts import get_object_or_404
-
 from rest_framework.permissions import AllowAny
+from rest_framework.views import APIView 
+from rest_framework.renderers import JSONRenderer 
+
 
 # list, retrieve and create there is another viewset for deleting and updating 
 class EventModelViewSet(viewsets.ViewSet):
@@ -63,3 +65,9 @@ class EventContribAuthModelViewSet(viewsets.ViewSet):
         
         serializer = EventSerializer(events, many=True)
         return Response(serializer.data)
+
+# get event category
+class EventTypesView(APIView):
+    permission_classes = [AllowAny]
+    def get(self, request):
+        return Response(JSONRenderer().render(Event.EVENT_TYPES)) # serialize the data 

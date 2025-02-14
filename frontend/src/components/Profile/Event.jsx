@@ -1,9 +1,26 @@
-import React from 'react'
+import React, {useState, useEffect} from 'react'
 import '../../styles/events.scss'
 import AddEvent from '../Profile/AddEvent'
 import BecomeContributor from '../Profile/BecomeContributor'
+import { decodeToken } from '../../Utils/authtoken';
+import axios from "axios";
 
 const Event = () => {
+  const token = localStorage.getItem('authToken');
+  const userId = token ? decodeToken(token).user_id : null;
+  const [verificationStatus, setVerificationStatus] = useState([]);
+
+  useEffect(() => {
+    if (!userId) return; 
+    axios.get(`http://127.0.0.1:8000/api/contributor/check-contributor-verification/${userId}/`)
+        .then(response => {
+            setVerificationStatus(response.data);
+            console.log(response.data);
+        })
+        .catch(error => {
+            console.error(error);
+        });
+}, [userId]);
   return (
     <>
     <div class="contributor-tag">
@@ -74,8 +91,12 @@ const Event = () => {
       </div>
     </div>
   </div>
-  <BecomeContributor />
-  <AddEvent/>
+  {verificationStatus?.verified === false && (
+    <BecomeContributor />
+)}
+  {verificationStatus?.verified === true && (
+    <AddEvent/>
+)}
     </>
   )
 }

@@ -27,9 +27,12 @@ class UserRegistrationSerializer(serializers.ModelSerializer):
         password2 = attrs.get('password2')
         if password != password2:
             raise serializers.ValidationError("Password and Confirm Password doesn't match")
+        if 'type' not in attrs or not attrs['type']: # adding type as normal from here
+            attrs['type'] = 'normal'
         return attrs
     
     def create(self, validate_data):
+        validate_data.pop('password2')
         return User.objects.create_user(**validate_data)
     
 
@@ -42,7 +45,7 @@ class UserLoginSerializer(serializers.ModelSerializer):
 class UserProfileSerializer(serializers.ModelSerializer):
     class Meta:
         model = User
-        fields = ['id','email','type','name']
+        fields = ['id','email','public_email','bio','social_account1', 'social_account2', 'social_account3','social_account4','name','type']
 
 class UserChangePasswordSerializer(serializers.Serializer):
     password = serializers.CharField(max_length=255, style={'input_type':'password'}, write_only=True)

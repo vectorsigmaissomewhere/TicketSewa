@@ -1,9 +1,31 @@
 import React, { useState } from 'react';
-import { Link } from 'react-router-dom';
+import { Link, useNavigate } from 'react-router-dom';
+import { jwtDecode } from 'jwt-decode';
 
 const Navbar = () => {
   const [menuOpen, setMenuOpen] = useState(true);
+  // get the access token
+  const user_acces_token = localStorage.getItem('authToken');
 
+  if (user_acces_token) {
+    try{
+      const decodedToken = jwtDecode(user_acces_token);
+      console.log("Decoded Token:", decodedToken);
+      console.log("User Id;", decodedToken.user_id);
+      console.log("Email:", decodedToken.email);
+      console.log("Access Token:", user_acces_token);
+      console.log("Is this running");
+    }
+    catch(error){
+      console.error("Invalid token:", error);
+    }
+  }
+  // logout code 
+  const navigate = useNavigate();
+  const logout_event = (e) =>{
+    localStorage.removeItem('authToken')
+    navigate('/');
+  }
   return (
     <nav className="bg-indigo-950 text-white px-5 py-3">
       <div className="container mx-auto flex justify-between items-center flex-wrap">
@@ -82,11 +104,20 @@ const Navbar = () => {
           >
             Profile
           </a></Link>
-          <Link to={'/login'}><a
+          {!user_acces_token && (
+            <Link to={'/login'}><a
             className="no-underline text-sm hover:text-blue-400 transition duration-300"
           >
             Sign in/Register
           </a></Link>
+          )}
+          {user_acces_token && (
+            <Link><a
+              className="no-underline text-sm hover:text-blue-400 transition duration-300" onClick={logout_event}
+            >
+              Logout
+            </a></Link>
+          )}
         </div>
       </div>
 

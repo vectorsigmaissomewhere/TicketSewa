@@ -6,6 +6,8 @@ from rest_framework.response import Response
 from account.renderers import UserRenderer
 from rest_framework import status
 from rest_framework.parsers import MultiPartParser, FormParser
+from rest_framework.views import APIView 
+from contributor.models import Contributor
 
 # request admin to be contributor
 class MakeContributorViewSet(viewsets.ViewSet):
@@ -38,4 +40,14 @@ class MakeContributorViewSet(viewsets.ViewSet):
             status=status.HTTP_400_BAD_REQUEST
         )
 
-    
+
+class GetContributorVerification(APIView):
+    def get(self, request, pk=None, format=None):
+        id = pk 
+        if id is not None:
+            contributor_object = Contributor.objects.get(user_id=id)
+            serializer = MakeContributorSerializer(contributor_object)
+            print(serializer.data['verified'])
+            return Response({'verified':serializer.data['verified']})
+        return Response(serializer.errors, status.status.HTTP_400_BAD_REQUEST)
+
