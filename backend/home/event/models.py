@@ -35,3 +35,21 @@ class Event(models.Model):
 
     def __str__(self):
         return self.name
+    
+class Like(models.Model):
+    user = models.ForeignKey(
+        settings.AUTH_USER_MODEL, 
+        on_delete=models.CASCADE,
+        related_name='likes'
+    )
+    event = models.ForeignKey(
+        Event,
+        on_delete=models.CASCADE,
+        related_name='likes'
+    )
+    like_id = models.BigAutoField(primary_key=True)
+    created_at = models.DateTimeField(auto_now_add=True)
+
+    def __str__(self):
+        return f"{self.user} liked {self.event.name}"
+

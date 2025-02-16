@@ -1,7 +1,7 @@
 from django.shortcuts import render
 from .models import Event
 from contributor.models import Contributor
-from .serializers import EventSerializer 
+from .serializers import EventSerializer, LikeSerializer
 from rest_framework import viewsets 
 from rest_framework.permissions import IsAuthenticated 
 from rest_framework.response import Response 
@@ -11,6 +11,8 @@ from django.shortcuts import get_object_or_404
 from rest_framework.permissions import AllowAny
 from rest_framework.views import APIView 
 from rest_framework.renderers import JSONRenderer 
+from rest_framework import viewsets 
+from .models import Like
 
 
 # list, retrieve and create there is another viewset for deleting and updating 
@@ -71,3 +73,30 @@ class EventTypesView(APIView):
     permission_classes = [AllowAny]
     def get(self, request):
         return Response(JSONRenderer().render(Event.EVENT_TYPES)) # serialize the data 
+    
+
+# Add like 
+class LikeViewSet(viewsets.ViewSet):
+    def create(self, request):
+        user = request.user  
+        event_id = request.data.get("event")
+
+        # Check if the user already liked this event
+        if Like.objects.filter(user=user, event_id=event_id).exists():
+            return Response({"msg": "You have already liked this event"}, status=status.HTTP_400_BAD_REQUEST)
+
+        serializer = LikeSerializer(data=request.data)
+        if serializer.is_valid():
+            serializer.save()
+            return Response({"msg": "Liked"}, status=status.HTTP_201_CREATED)
+        return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+
+# get all liked events 
+class LikedEventViewSet(viewsets.ReadOnlyModelViewSet):
+    serializer_class = LikeSerializer
+    
+    def get_queryset(self):
+        user_id = self.kwargs.get('pk')  
+        queryset = Like.objects.filter(user_id=user_id)
+        print(queryset.query)  
+        return queryset
