@@ -1,8 +1,46 @@
-import React from 'react'
+import React, { useEffect, useState }  from 'react'
 import '../../styles/allevent.scss';
 import { Heart } from "lucide-react";
+import { decodeToken } from '../../Utils/authtoken';
+import axios from 'axios';
 
 const EventList = () => {
+  const [events, setEvents] = useState([]);
+
+  useEffect(() => {
+    fetch("http://127.0.0.1:8000/eventviewapi/")
+      .then((response) => response.json())
+      .then((data) => setEvents(data))
+      .catch((error) => console.error("Error fetching events:", error));
+  }, []);
+  const [likedEvents, setLikedEvents] = useState([]);
+  const token = localStorage.getItem('authToken');
+  const decodedToken = decodeToken(token);
+  const userId = decodedToken?.user_id || null;
+
+  const handleLike = async (eventId) => {
+    try {
+      const response = await axios.post(
+        "http://127.0.0.1:8000/like_event/",
+        {
+          event: eventId,
+          user: userId, 
+        },
+        {
+          headers: {
+            Authorization: `Bearer ${localStorage.getItem("authToken")}`, 
+          },
+        }
+      );
+
+      if (response.status === 201) {
+        setLikedEvents((prev) => [...prev, eventId]);
+      }
+    } catch (error) {
+      console.error("Error liking event:", error);
+    }
+  };
+  
   return (
     <>
     <div className='main-container-eventlist'>
@@ -46,76 +84,39 @@ const EventList = () => {
         <button className="bg-blue-500 text-white text-lg font-semibold py-1 px-2 rounded-lg cursor-pointer mt-2.5 transition-all duration-300 ease-in-out transform hover:bg-blue-700 hover:scale-105 ml-auto mr-2 block">Add filter</button>
         </form>
       </div>
-      <div className='main-container-eventlist-event'>
-        <div className='heading-name'>
-          All Events 
-        </div>
-        <div class="main-container">
-    <div class="main-container-first">
-      <div class="main-container-image">
-        <img src="https://img.freepik.com/free-vector/gradient-musical-event-poster-template_23-2150520412.jpg" alt="Event Image"/>
-      </div>
-      <div class="content">
-        <div>
-          <div class="title">Amazing Music Concert with Famous Artists...</div>
-          <div class="time">📅 July 20, 2025 - 8:00 PM</div>
-        </div>
-        <div class="like">
-        <Heart />
-        </div>
-        <button class="event-btn">View Event Details</button>
-      </div>
-    </div>
-
-    <div class="main-container-first">
-      <div class="main-container-image">
-        <img src="https://www.shutterstock.com/image-photo/concert-stage-audience-turns-on-260nw-2435542313.jpg" alt="Event Image"/>
-      </div>
-      <div class="content">
-        <div>
-          <div class="title">Live Rock Festival 2025 in Your City...</div>
-          <div class="time">📅 August 10, 2025 - 7:30 PM</div>
-        </div>
-        <div class="like">
-        <Heart />
-        </div>
-        <button class="event-btn">View Event Details</button>
+      <div className="main-container-eventlist-event">
+      <div className="heading-name">All Events</div>
+      <div className="main-container">
+        {events.map((event) => (
+          <div className="main-container-first" key={event.event_id}>
+            <div className="main-container-image">
+              <img
+                src={`http://127.0.0.1:8000${event.event_image}`}
+                alt="Event Image"
+              />
+            </div>
+            <div className="content">
+              <div>
+                <div className="title">{event.name}</div>
+                <div className="time">
+                  📅 {new Date(event.date).toDateString()} - {event.time}
+                </div>
+              </div>
+              <p>{event.event_id}</p>
+              <div className="like">
+              <Heart
+                    size={24}
+                    color={likedEvents.includes(event.event_id) ? "red" : "gray"}
+                    onClick={() => handleLike(event.event_id)}
+                    style={{ cursor: "pointer" }}
+                  />
+              </div>
+              <button className="event-btn">View Event Details</button>
+            </div>
+          </div>
+        ))}
       </div>
     </div>
-
-    <div class="main-container-first">
-      <div class="main-container-image">
-        <img src="https://media.istockphoto.com/id/1461816749/photo/a-crowd-of-people-with-raised-arms-during-a-music-concert-with-an-amazing-light-show-black.jpg?s=612x612&w=0&k=20&c=-hdWCLDP5AI9A3mjq3JPMPKhXxJ2P1iItPDFktQHxX8=" alt="Event Image"/>
-      </div>
-      <div class="content">
-        <div>
-          <div class="title">Electronic Dance Night 2025 Featuring Top DJs...</div>
-          <div class="time">📅 September 5, 2025 - 9:00 PM</div>
-        </div>
-        <div class="like">
-        <Heart />
-        </div>
-        <button class="event-btn">View Event Details</button>
-      </div>
-    </div>
-
-    <div class="main-container-first">
-      <div class="main-container-image">
-        <img src="https://media.istockphoto.com/id/1806011581/photo/overjoyed-happy-young-people-dancing-jumping-and-singing-during-concert-of-favorite-group.jpg?s=612x612&w=0&k=20&c=cMFdhX403-yKneupEN-VWSfFdy6UWf1H0zqo6QBChP4=" alt="Event Image"/>
-      </div>
-      <div class="content">
-        <div>
-          <div class="title">Hip-Hop Legends Tour 2025 with Special Guests...</div>
-          <div class="time">📅 October 15, 2025 - 6:45 PM</div>
-        </div>
-        <div class="like">
-        <Heart />
-        </div>
-        <button class="event-btn">View Event Details</button>
-      </div>
-    </div>
-    </div>
-      </div>
     </div>
     </>
   )

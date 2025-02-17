@@ -22,8 +22,8 @@ likerouter = DefaultRouter()
 likerouter.register('like_event', LikeViewSet, basename='like_event')
 
 # get liked events 
-like_event_router = DefaultRouter()
-like_event_router.register('like_event_list', LikedEventViewSet, basename='like_event_list')
+#like_event_router = DefaultRouter()
+#like_event_router.register('like_event_list', LikedEventViewSet, basename='like_event_list')
 
 urlpatterns = [
     path('admin/', admin.site.urls),
@@ -35,5 +35,5 @@ urlpatterns = [
     path('api/contributor/', include('contributor.urls')),
     path('api/event/', include('event.urls')),
     path('', include(likerouter.urls)),   # url for like 
-    path('', include(like_event_router.urls)), # get all the event that a user has liked 
+    path('liked-events/<int:user_id>/', LikedEventViewSet.as_view({'get': 'list'}), name='liked-events'), # get all the event that a user has liked 
 ]+ static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)

@@ -2,7 +2,6 @@ from django.shortcuts import render
 from .models import Event
 from contributor.models import Contributor
 from .serializers import EventSerializer, LikeSerializer
-from rest_framework import viewsets 
 from rest_framework.permissions import IsAuthenticated 
 from rest_framework.response import Response 
 from account.renderers import UserRenderer 
@@ -93,10 +92,10 @@ class LikeViewSet(viewsets.ViewSet):
 
 # get all liked events 
 class LikedEventViewSet(viewsets.ReadOnlyModelViewSet):
-    serializer_class = LikeSerializer
-    
-    def get_queryset(self):
-        user_id = self.kwargs.get('pk')  
-        queryset = Like.objects.filter(user_id=user_id)
-        print(queryset.query)  
-        return queryset
+    serializer_class = EventSerializer  # Use EventSerializer, NOT LikeSerializer
+
+    def list(self, request, user_id=None):
+        # Get all events that the user has liked
+        liked_events = Event.objects.filter(likes__user_id=user_id)  # Use the correct reverse relation name
+        serializer = self.get_serializer(liked_events, many=True)
+        return Response(serializer.data)

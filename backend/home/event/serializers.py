@@ -5,11 +5,13 @@ class EventSerializer(serializers.ModelSerializer):
     class Meta:
         model = Event 
         fields = '__all__'
+        many = True 
  
 class LikeSerializer(serializers.ModelSerializer):
     class Meta:
         model = Like
         fields = '__all__'
+        list_serializer_class = serializers.ListSerializer 
 
     def validate(self, data):
         user = data["user"]
