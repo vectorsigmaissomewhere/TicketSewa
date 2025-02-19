@@ -99,3 +99,4 @@ class LikedEventViewSet(viewsets.ReadOnlyModelViewSet):
         liked_events = Event.objects.filter(likes__user_id=user_id)  # Use the correct reverse relation name
         serializer = self.get_serializer(liked_events, many=True)
         return Response(serializer.data)
+

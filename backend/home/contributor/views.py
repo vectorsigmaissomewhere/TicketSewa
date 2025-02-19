@@ -8,6 +8,9 @@ from rest_framework import status
 from rest_framework.parsers import MultiPartParser, FormParser
 from rest_framework.views import APIView 
 from contributor.models import Contributor
+from django.views import View 
+from django.shortcuts import get_object_or_404
+from django.http import JsonResponse
 
 # request admin to be contributor
 class MakeContributorViewSet(viewsets.ViewSet):
@@ -51,3 +54,10 @@ class GetContributorVerification(APIView):
             return Response({'verified':serializer.data['verified']})
         return Response(serializer.errors, status.status.HTTP_400_BAD_REQUEST)
 
+
+# return contributor_id by passing user_id 
+class GetContributorIdView(View):
+    def get(self, request, user_id):
+        contributor = get_object_or_404(Contributor, user=user_id)
+        print(contributor)
+        return JsonResponse({"contributor_id": contributor.contributorid})

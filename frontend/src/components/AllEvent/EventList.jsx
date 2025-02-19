@@ -3,6 +3,7 @@ import '../../styles/allevent.scss';
 import { Heart } from "lucide-react";
 import { decodeToken } from '../../Utils/authtoken';
 import axios from 'axios';
+import { useNavigate } from 'react-router-dom';
 
 const EventList = () => {
   const [events, setEvents] = useState([]);
@@ -17,6 +18,7 @@ const EventList = () => {
   const token = localStorage.getItem('authToken');
   const decodedToken = decodeToken(token);
   const userId = decodedToken?.user_id || null;
+  const navigate = useNavigate();
 
   const handleLike = async (eventId) => {
     try {
@@ -39,6 +41,10 @@ const EventList = () => {
     } catch (error) {
       console.error("Error liking event:", error);
     }
+  };
+
+  const handleCheckContributor = (eventContributorId) => {
+    navigate(`/profile/${eventContributorId}`);
   };
   
   return (
@@ -102,7 +108,11 @@ const EventList = () => {
                   📅 {new Date(event.date).toDateString()} - {event.time}
                 </div>
               </div>
-              <p>{event.event_id}</p>
+              <div>
+                  <button onClick={() => handleCheckContributor(event.user)}>
+                    Check Contributor
+                  </button>
+                </div>
               <div className="like">
               <Heart
                     size={24}

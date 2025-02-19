@@ -17,7 +17,8 @@ const App = () => {
         <Route path='/' element={<Home />} />
         <Route path='/signup' element={<Signup />} />
         <Route path='/login' element={<Login />} />
-        <Route path='/profile' element={<Profile />} />
+        <Route path='/profile/' element={<Profile />} />
+        <Route path='/profile/:eventContributorId' element={<Profile />} />
         <Route path='/settings/accountprofile' element={<AccountPublicProfile />} />
         <Route path='/settings/accountconfig' element={<AccountSettingsNav />}/>
         <Route path='/settings/transaction' element={<AddTransaction />} />
