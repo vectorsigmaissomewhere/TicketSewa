@@ -92,10 +92,8 @@ class LikeViewSet(viewsets.ViewSet):
 
 # get all liked events 
 class LikedEventViewSet(viewsets.ReadOnlyModelViewSet):
-    serializer_class = EventSerializer  # Use EventSerializer, NOT LikeSerializer
-
+    serializer_class = EventSerializer  
     def list(self, request, user_id=None):
-        # Get all events that the user has liked
         liked_events = Event.objects.filter(likes__user_id=user_id)  # Use the correct reverse relation name
         serializer = self.get_serializer(liked_events, many=True)
         return Response(serializer.data)

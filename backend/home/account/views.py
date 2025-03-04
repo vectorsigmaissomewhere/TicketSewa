@@ -5,7 +5,9 @@ from account.serializers import UserRegistrationSerializer, UserLoginSerializer,
 from django.contrib.auth import authenticate
 from account.renderers import UserRenderer
 from rest_framework_simplejwt.tokens import RefreshToken 
-from rest_framework.permissions import IsAuthenticated
+from rest_framework.permissions import IsAuthenticated, AllowAny
+from rest_framework import viewsets
+from .models import User 
 
 def get_token_for_user(user):
     refresh = RefreshToken.for_user(user)
@@ -41,12 +43,23 @@ class UserLoginView(APIView):
                 return Response({'errors':{'non_field_errors':['Email or Password is not Valid']}}, status=status.HTTP_404_NOT_FOUND)
         return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
 
+# get the profile information using the bearer token 
 class UserProfileView(APIView):
     renderer_classes = [UserRenderer]
     permission_classes = [IsAuthenticated]
     def get(self, request, format=None):
         serializer = UserProfileSerializer(request.user)
         return Response(serializer.data, status=status.HTTP_200_OK)
+    # Updating specific fields using PATCH
+    def patch(self, request, format=None):
+        user = request.user  
+        serializer = UserProfileSerializer(user, data=request.data, partial=True)
+        if serializer.is_valid():
+            serializer.save()
+            return Response({'msg': 'Profile updated successfully', 'data': serializer.data}, status=status.HTTP_200_OK)
+
+        return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+
 
 class UserChangePasswordView(APIView):
     renderer_classes = [UserRenderer]
@@ -56,6 +69,8 @@ class UserChangePasswordView(APIView):
         if serializer.is_valid(raise_exception=True):
             return Response({'msg':'Password Changed Successfully'}, status=status.HTTP_200_OK)
         return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+        
+
         
 # send email to user for password change
 class SendPasswordResetEmailView(APIView):
@@ -74,4 +89,16 @@ class UserPasswordResetView(APIView):
         if serializer.is_valid(raise_exception=True):
             return Response({'msg':'Password Reset Successfully'}, status=status.HTTP_200_OK)
         return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+    
+# get the profile information using the user id 
+class UserProfileViewWithIdViewSet(viewsets.ViewSet):
+    permission_classes = [AllowAny]
+    def retrieve(self, request, pk = None):
+        user_id = pk 
+        try:
+            profiledetails = User.objects.get(id=user_id)
+            serializer = UserProfileSerializer(profiledetails)
+            return Response(serializer.data, status=200)
+        except User.DoesNotExist:
+            return Response({'error':'User not found'}, status=404)
     

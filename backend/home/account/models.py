@@ -47,6 +47,7 @@ class User(AbstractBaseUser):
     social_account3 = models.CharField(max_length=200, blank=True)
     social_account4 = models.CharField(max_length=200, blank=True)
     name = models.CharField(max_length=200)
+    location = models.CharField(max_length=200, blank=True)
     
     USER_TYPE_CHOICES = (
         ("normal", "Normal User"),
