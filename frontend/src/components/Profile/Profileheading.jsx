@@ -21,32 +21,32 @@ const Profileheading = () => {
   };
 
   const togglePopup = (e) => {
-    e.stopPropagation(); 
+    e.stopPropagation();
     setIsPopupVisible((prev) => !prev);
   };
 
 
   document.addEventListener('click', () => setIsPopupVisible(false));
 
-  if(!eventContributorId){
-  if (userId) {
-    useEffect(() => {
-      axios
-        .get(`http://127.0.0.1:8000/api/user/profile/`, {
-          headers: {
-            Authorization: `Bearer ${token}`,
-          },
-        })
-        .then((response) => {
-          setProfileDetail(response.data);
-          console.log(response.data);
-        })
-        .catch((error) => {
-          console.error(error);
-        });
-    }, []);     
+  if (!eventContributorId) {
+    if (userId) {
+      useEffect(() => {
+        axios
+          .get(`http://127.0.0.1:8000/api/user/profile/`, {
+            headers: {
+              Authorization: `Bearer ${token}`,
+            },
+          })
+          .then((response) => {
+            setProfileDetail(response.data);
+            console.log(response.data);
+          })
+          .catch((error) => {
+            console.error(error);
+          });
+      }, []);
+    }
   }
-}
 
   if (eventContributorId) {
     useEffect(() => {
@@ -59,7 +59,7 @@ const Profileheading = () => {
         .catch((error) => {
           console.error(error);
         });
-    }, [eventContributorId]);     
+    }, [eventContributorId]);
   }
 
   return (
@@ -124,26 +124,26 @@ const Profileheading = () => {
                 <a className="text-sm">{profileDetail.location || 'Location not provided'}</a>
               </div>
               {/* Social Media Icons */}
-              <div className="bg-red-500 w-full ml-[3%] flex flex-row justify-end gap-2 p-1">
-                {profileDetail.social_account1 && (
-                  <div className="link">
-                    <p>{profileDetail.social_account1}</p>
-                  </div>
-                )}
-                {profileDetail.social_account2 && (
-                  <div className="link">
-                    <p>{profileDetail.social_account2}</p>
-                  </div>
-                )}
-                {profileDetail.social_account3 && (
-                  <div className="link">
-                    <p>{profileDetail.social_account3}</p>
-                  </div>
-                )}
-                {profileDetail.social_account4 && (
-                  <div className="link">
-                    <p>{profileDetail.social_account4}</p>
-                  </div>
+              <div className="bg-white-500 w-full ml-[3%] flex flex-row justify-end gap-2 p-1">
+                {[profileDetail.social_account1, profileDetail.social_account2, profileDetail.social_account3, profileDetail.social_account4].map(
+                  (account, index) =>
+                    account && (
+                      <div
+                        key={index}
+                        className="link cursor-pointer bg-white p-1 rounded shadow-md hover:bg-gray-200"
+                        onClick={() => {
+                          navigator.clipboard.writeText(account);
+                          alert('Social media link copied!');
+                        }}
+                      >
+                        <p>Social Link</p>
+                        <img
+                          className="w-[20px] h-[20px]"
+                          src="https://cdn-icons-png.flaticon.com/512/10016/10016986.png"
+                          alt="Social"
+                        />
+                      </div>
+                    )
                 )}
               </div>
             </div>

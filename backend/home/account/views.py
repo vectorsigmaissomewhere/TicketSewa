@@ -101,4 +101,4 @@ class UserProfileViewWithIdViewSet(viewsets.ViewSet):
             return Response(serializer.data, status=200)
         except User.DoesNotExist:
             return Response({'error':'User not found'}, status=404)
-    
+        

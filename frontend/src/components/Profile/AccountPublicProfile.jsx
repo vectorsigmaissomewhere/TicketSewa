@@ -1,8 +1,33 @@
-import React from 'react';
+import React, { useState, useEffect } from 'react';
 import '../../styles/accountsetting.scss';
 import { Link } from 'react-router-dom';
+import { decodeToken } from '../../Utils/authtoken';
+import axios from 'axios';
 
 const AccountPublicProfile = () => {
+  const [profileDetail, setProfileDetail] = useState('');
+  const token = localStorage.getItem('authToken');
+  const decodedToken = decodeToken(token);
+  const userId = decodedToken?.user_id || null;
+
+  if(userId){
+    useEffect(()=>{
+      axios
+        .get(`http://127.0.0.1:8000/api/user/profile/`, {
+          headers: {
+            Authorization: `Bearer ${token}`,
+          },
+        })
+        .then((response) => {
+          setProfileDetail(response.data);
+          console.log(response.data);
+        })
+        .catch((error)=>{
+          console.error(error);
+        });
+    }, []);
+  }
+
   return (
     <>
       <div className="profile-navigation-main">
