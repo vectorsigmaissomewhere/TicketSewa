@@ -5,127 +5,137 @@ import { decodeToken } from '../../Utils/authtoken';
 import axios from 'axios';
 
 const AccountPublicProfile = () => {
-  const [profileDetail, setProfileDetail] = useState('');
+  const [profileDetail, setProfileDetail] = useState({
+    name: '',
+    public_email: '',
+    bio: '',
+    social_account1: '',
+    social_account2: '',
+    social_account3: '',
+    social_account4: '',
+    location: '',
+  });
+
   const token = localStorage.getItem('authToken');
   const decodedToken = decodeToken(token);
   const userId = decodedToken?.user_id || null;
 
-  if(userId){
-    useEffect(()=>{
+  useEffect(() => {
+    if (userId) {
       axios
-        .get(`http://127.0.0.1:8000/api/user/profile/`, {
+        .get('http://127.0.0.1:8000/api/user/profile/', {
           headers: {
             Authorization: `Bearer ${token}`,
           },
         })
         .then((response) => {
           setProfileDetail(response.data);
-          console.log(response.data);
         })
-        .catch((error)=>{
+        .catch((error) => {
           console.error(error);
         });
-    }, []);
-  }
+    }
+  }, [userId, token]);
+
+  const handleChange = (e) => {
+    setProfileDetail({ ...profileDetail, [e.target.name]: e.target.value });
+  };
+
+  const handleSubmit = (e) => {
+    e.preventDefault();
+    axios
+      .patch('http://127.0.0.1:8000/api/user/profile/', profileDetail, {
+        headers: {
+          Authorization: `Bearer ${token}`,
+          'Content-Type': 'application/json',
+        },
+      })
+      .then((response) => {
+        setProfileDetail(response.data);
+        alert('Profile updated successfully!');
+      })
+      .catch((error) => {
+        console.error(error);
+        alert('Failed to update profile.');
+      });
+  };
 
   return (
     <>
       <div className="profile-navigation-main">
         <div className="profile-navigation-navbar">
           <p>Settings</p>
-          <Link to={"/settings/accountprofile"}><button className="public-profile-button" style={{ backgroundColor: "#e0e0e0" }}>
-            <img
-              src="https://e7.pngegg.com/pngimages/442/477/png-clipart-computer-icons-user-profile-avatar-profile-heroes-profile.png"
-              alt="Profile Icon"
-            />
-            Public Profile
-          </button>
+          <Link to={"/settings/accountprofile"}>
+            <button className="public-profile-button" style={{ backgroundColor: "#e0e0e0" }}>
+              <img src="https://e7.pngegg.com/pngimages/442/477/png-clipart-computer-icons-user-profile-avatar-profile-heroes-profile.png" alt="Profile Icon" />
+              Public Profile
+            </button>
           </Link>
-          <Link to={"/settings/accountconfig"}><button className="account-button">
-            <img
-              src="https://e7.pngegg.com/pngimages/442/477/png-clipart-computer-icons-user-profile-avatar-profile-heroes-profile.png"
-              alt="Profile Icon"
-            />
-            Account
-          </button>
+          <Link to={"/settings/accountconfig"}>
+            <button className="account-button">
+              <img src="https://e7.pngegg.com/pngimages/442/477/png-clipart-computer-icons-user-profile-avatar-profile-heroes-profile.png" alt="Profile Icon" />
+              Account
+            </button>
           </Link>
-          <Link to={"/settings/transaction"}><button className="transaction-button">
-            <img
-              src="https://e7.pngegg.com/pngimages/442/477/png-clipart-computer-icons-user-profile-avatar-profile-heroes-profile.png"
-              alt="Profile Icon"
-            />
-            Transaction
-          </button>
+          <Link to={"/settings/transaction"}>
+            <button className="transaction-button">
+              <img src="https://e7.pngegg.com/pngimages/442/477/png-clipart-computer-icons-user-profile-avatar-profile-heroes-profile.png" alt="Profile Icon" />
+              Transaction
+            </button>
           </Link>
-          <Link to={"/settings/moderator"}><button className="moderator-button">
-            <img
-              src="https://e7.pngegg.com/pngimages/442/477/png-clipart-computer-icons-user-profile-avatar-profile-heroes-profile.png"
-              alt="Profile Icon"
-            />
-            Add Moderator
-          </button></Link>
+          <Link to={"/settings/moderator"}>
+            <button className="moderator-button">
+              <img src="https://e7.pngegg.com/pngimages/442/477/png-clipart-computer-icons-user-profile-avatar-profile-heroes-profile.png" alt="Profile Icon" />
+              Add Moderator
+            </button>
+          </Link>
         </div>
         <div className="profile-navigation-details">
           <h2>Public Profile</h2>
           <div className="profile-picture">
             <label>Profile Picture</label>
-            <img
-              className="profile-picture-main"
-              src="https://static.vecteezy.com/system/resources/thumbnails/033/889/256/small/sunset-on-the-sea-shore-generated-by-ai-photo.jpg"
-              alt="Profile Image"
-            />
+            <img className="profile-picture-main" src="https://static.vecteezy.com/system/resources/thumbnails/033/889/256/small/sunset-on-the-sea-shore-generated-by-ai-photo.jpg" alt="Profile Image" />
             <label htmlFor="file-upload" className="editicon-label">
-              <img
-                className="editicon"
-                src="https://w7.pngwing.com/pngs/122/880/png-transparent-letter-mail-mailing-email-mailbox-inbox-thumbnail.png"
-                alt="Upload Image"
-              />
+              <img className="editicon" src="https://w7.pngwing.com/pngs/122/880/png-transparent-letter-mail-mailing-email-mailbox-inbox-thumbnail.png" alt="Upload Image" />
             </label>
             <input type="file" id="file-upload" name="file-upload" accept="image/*" style={{ display: "none" }} />
           </div>
 
-          <form>
+          <form onSubmit={handleSubmit}>
             <div className="public-name">
               <label>Name</label>
-              <input type="text" />
-              <p>Your name appears around your profile. It's where people check the contributor profile. You can remove it at any time.</p>
+              <input type="text" name="name" value={profileDetail.name} onChange={handleChange} />
+              <p>Your name appears around your profile. You can remove it at any time.</p>
             </div>
             <div className="public-email">
               <label>Public Email</label>
-              <input type="email" />
-              <p>Your email appears around your profile. It's where people check the contributor profile. You can remove it at any time.</p>
+              <input type="email" name="public_email" value={profileDetail.public_email} onChange={handleChange} />
+              <p>Your email appears around your profile. You can remove it at any time.</p>
             </div>
             <div className="public-bio">
               <label>Bio</label>
-              <textarea className="profile-bio-textarea" rows="6" cols="40"></textarea>
-              <p>Your bio appears around your profile. It's where people check the contributor profile. You can remove it at any time.</p>
+              <textarea className="profile-bio-textarea" name="bio" rows="6" cols="40" value={profileDetail.bio} onChange={handleChange}></textarea>
+              <p>Your bio appears around your profile. You can remove it at any time.</p>
             </div>
             <div className="public-social-account">
               <label>Social Accounts</label>
-              <div style={{ display: "flex", alignItems: "center", gap: "6px", marginBottom: "8px" }}>
-                <img className="editicon" src="https://w7.pngwing.com/pngs/279/877/png-transparent-hyperlink-computer-icons-link-text-logo-number.png" alt="Upload Image" />
-                <input type="text" style={{ width: "80%" }} />
-              </div>
-
-              <div style={{ display: "flex", alignItems: "center", gap: "6px", marginBottom: "8px" }}>
-                <img className="editicon" src="https://w7.pngwing.com/pngs/279/877/png-transparent-hyperlink-computer-icons-link-text-logo-number.png" alt="Upload Image" />
-                <input type="text" style={{ width: "80%" }} />
-              </div>
-
-              <div style={{ display: "flex", alignItems: "center", gap: "6px", marginBottom: "8px" }}>
-                <img className="editicon" src="https://w7.pngwing.com/pngs/279/877/png-transparent-hyperlink-computer-icons-link-text-logo-number.png" alt="Upload Image" />
-                <input type="text" style={{ width: "80%" }} />
-              </div>
-
-              <div style={{ display: "flex", alignItems: "center", gap: "6px", marginBottom: "8px" }}>
-                <img className="editicon" src="https://w7.pngwing.com/pngs/279/877/png-transparent-hyperlink-computer-icons-link-text-logo-number.png" alt="Upload Image" />
-                <input type="text" style={{ width: "80%" }} />
-              </div>
+              {[1, 2, 3, 4].map((num) => (
+                <div key={num} style={{ display: "flex", alignItems: "center", gap: "6px", marginBottom: "8px" }}>
+                  <img className="editicon" src="https://w7.pngwing.com/pngs/279/877/png-transparent-hyperlink-computer-icons-link-text-logo-number.png" alt="Link Icon" />
+                  <input
+                    type="text"
+                    name={`social_account${num}`}
+                    value={profileDetail[`social_account${num}`] || ''}
+                    onChange={handleChange}
+                    style={{ width: "80%" }}
+                  />
+                </div>
+              ))}
             </div>
             <div>
               <label>Location</label>
-              <input type="text" />
-              <p>Your location appears around your profile. It's where people check the contributor profile. You can remove it at any time.</p>
+              <input type="text" name="location" value={profileDetail.location} onChange={handleChange} />
+              <p>Your location appears around your profile. You can remove it at any time.</p>
             </div>
             <button className="submit-button" type="submit">Submit</button>
           </form>
