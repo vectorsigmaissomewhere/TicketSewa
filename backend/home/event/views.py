@@ -12,6 +12,11 @@ from rest_framework.views import APIView
 from rest_framework.renderers import JSONRenderer 
 from rest_framework import viewsets 
 from .models import Like
+from rest_framework.generics import ListAPIView
+from django.db.models import Q
+from rest_framework.filters import OrderingFilter
+
+
 
 
 # list, retrieve and create there is another viewset for deleting and updating 
@@ -98,3 +103,37 @@ class LikedEventViewSet(viewsets.ReadOnlyModelViewSet):
         serializer = self.get_serializer(liked_events, many=True)
         return Response(serializer.data)
 
+# adding filter in Events 
+class EventListView(ListAPIView):
+    serializer_class = EventSerializer
+    queryset = Event.objects.all()
+    filter_backends = [OrderingFilter]
+    permission_classes = [AllowAny]  # Allow anyone to view events (adjust as needed)
+
+    def get_queryset(self):
+        queryset = super().get_queryset()
+        query_params = self.request.query_params
+
+        category = query_params.get('category', None)
+        country = query_params.get('country', None)
+        city = query_params.get('city', None)
+        ticket_active = query_params.get('ticket_active', None)
+        event_date = query_params.get('event_date', None)
+        capacity = query_params.get('capacity', None)
+
+        filters = Q()
+
+        if category:
+            filters &= Q(category__iexact=category)    
+        if country:
+            filters &= Q(country__iexact=country)
+        if city:
+            filters &= Q(city__iexact=city)
+        if ticket_active is not None:
+            filters &= Q(ticket_active=ticket_active.lower() == 'true')
+        if event_date:
+            filters &= Q(date=event_date)
+        if capacity:
+            filters &= Q(max_tickets__gte=int(capacity)) 
+
+        return queryset.filter(filters)

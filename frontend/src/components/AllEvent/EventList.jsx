@@ -61,12 +61,15 @@ const EventList = () => {
         </div>
         <div className='filter-content'>
           <label>Event Type</label>
-          <input type='text'/>
+          <select name="event_type">
+            <option value="" disabled>Choose Category</option>
+            <option value="concert">Concert</option>
+            <option value="sport">Sport</option>
+            <option value="art">Art</option>
+            <option value="family">Family</option>
+          </select>
         </div>
-        <div className='filter-content'>
-          <label>Genre</label>
-          <input type='text'/>
-        </div>
+
         <div className='filter-content'>
           <label>Country</label>
           <input type='text'/>
