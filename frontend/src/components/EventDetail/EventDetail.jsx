@@ -1,54 +1,111 @@
-import React from "react";
+import React, { useEffect, useState } from "react";
+import { useParams } from "react-router-dom";
+import axios from "axios";
 
 const EventDetail = () => {
+  const { eventId } = useParams();  // Extract eventId from the URL
+  const [eventDetails, setEventDetails] = useState(null);
+  const [loading, setLoading] = useState(true);
+  const [error, setError] = useState(null);
+
+  useEffect(() => {
+    const fetchEventDetails = async () => {
+      try {
+        const response = await axios.get(`http://127.0.0.1:8000/eventviewapi/${eventId}/`);
+        setEventDetails(response.data);
+        setLoading(false);
+      } catch (err) {
+        console.error("Error fetching event details:", err);
+        setError("Failed to load event details.");
+        setLoading(false);
+      }
+    };
+
+    fetchEventDetails();
+  }, [eventId]);  // Re-fetch when eventId changes
+
+  if (loading) {
+    return <div>Loading...</div>;
+  }
+
+  if (error) {
+    return <div>{error}</div>;
+  }
+
+  // Destructure the event data
+  const {
+    name,
+    event_image,
+    date,
+    time,
+    country,
+    city,
+    address,
+    description,
+    ticket_active,
+    max_tickets,
+    user,
+  } = eventDetails;
+
   return (
     <div className="bg-gray-100 min-h-screen">
       {/* Event Header */}
       <div className="relative bg-blue-900 text-white p-6">
         <div className="max-w-4xl mx-auto flex flex-col md:flex-row gap-6">
-          <img
-            src="/event-poster.jpg"
-            alt="Dream On Music Fest"
-            className="w-full md:w-1/3 rounded-lg shadow-lg"
-          />
+          {/* Conditionally render the event image */}
+          {event_image && (
+            <img
+              src={event_image}
+              alt={name}
+              className="w-full md:w-1/3 rounded-lg shadow-lg"
+            />
+          )}
           <div className="flex-1">
-            <h1 className="text-2xl font-bold">Dream On Music Fest</h1>
-            <p className="mt-2">📅 13 MAR | 🕒 1:31 AM ONWARDS</p>
-            <p className="mt-1">📍 Hyatt Ground, Chuchhepati, Chabahil</p>
+            <h1 className="text-2xl font-bold">{name}</h1>
+            <p className="mt-2">📅 {new Date(date).toDateString()} | 🕒 {time}</p>
+            <p className="mt-1">📍 {address || `${city}, ${country}`}</p>
             <div className="mt-4 flex items-center gap-4">
-              <span className="text-lg font-semibold">Rs. 899</span>
-              <button className="bg-pink-500 hover:bg-pink-600 text-white px-6 py-2 rounded-lg">Book Now</button>
+              <span className="text-lg font-semibold">
+                {ticket_active ? "Active" : "Inactive"} | Max Tickets: {max_tickets}
+              </span>
+              <button className="bg-pink-500 hover:bg-pink-600 text-white px-6 py-2 rounded-lg">
+                Book Now
+              </button>
             </div>
           </div>
         </div>
       </div>
 
-      {/* Event Details */}
-      <div className="max-w-4xl mx-auto p-6 bg-white mt-6 rounded-lg shadow-lg">
-        <h2 className="text-xl font-semibold">Event Details</h2>
-        <p className="mt-2 text-gray-700">
-          Get ready for a Night of Unforgettable Music 🎸 Wander into melody as Albatross, Swar, Sabin Rai & the Pharaoh, and The Rockheads take the stage for an electrifying live performance!
-        </p>
-      </div>
+      {/* Event Description */}
+      {description && (
+        <div className="max-w-4xl mx-auto p-6 bg-white mt-6 rounded-lg shadow-lg">
+          <h2 className="text-xl font-semibold">Event Details</h2>
+          <p className="mt-2 text-gray-700">{description}</p>
+        </div>
+      )}
 
-      {/* Organizer Info */}
+      {/* Organizer Info - You can show the user data or static placeholder */}
       <div className="max-w-4xl mx-auto p-6 bg-white mt-6 rounded-lg shadow-lg flex items-center gap-4">
-        <img src="/khalti-logo.png" alt="Khalti Events" className="w-12 h-12 rounded-full" />
+        <img src="/khalti-logo.png" alt="Organizer" className="w-12 h-12 rounded-full" />
         <div>
-          <p className="font-semibold">Khalti Events</p>
+          <p className="font-semibold">{user ? `Organizer ID: ${user}` : "Organizer Info"}</p>
           <p className="text-sm text-gray-500">Organizer</p>
         </div>
       </div>
 
       {/* Location Map */}
-      <div className="max-w-4xl mx-auto p-6 bg-white mt-6 rounded-lg shadow-lg">
-        <iframe
-          src="https://www.google.com/maps/embed?..."
-          className="w-full h-64 rounded-lg"
-          allowFullScreen
-          loading="lazy"
-        ></iframe>
-      </div>
+      {city && country && (
+        <div className="max-w-4xl mx-auto p-6 bg-white mt-6 rounded-lg shadow-lg">
+          <iframe
+            src={`https://www.google.com/maps/embed/v1/place?key=YOUR_GOOGLE_MAPS_API_KEY&q=${encodeURIComponent(
+              address || `${city}, ${country}`
+            )}`}
+            className="w-full h-64 rounded-lg"
+            allowFullScreen
+            loading="lazy"
+          ></iframe>
+        </div>
+      )}
 
       {/* Terms & Conditions */}
       <div className="max-w-4xl mx-auto p-6 bg-white mt-6 rounded-lg shadow-lg">
