@@ -114,12 +114,13 @@ class EventListView(ListAPIView):
         queryset = super().get_queryset()
         query_params = self.request.query_params
 
-        category = query_params.get('category', None)
-        country = query_params.get('country', None)
-        city = query_params.get('city', None)
-        ticket_active = query_params.get('ticket_active', None)
-        event_date = query_params.get('event_date', None)
-        capacity = query_params.get('capacity', None)
+        category = query_params.get('category')
+        country = query_params.get('country')
+        city = query_params.get('city')
+        ticket_active = query_params.get('ticket_active')
+        event_date = query_params.get('event_date')
+        capacity = query_params.get('capacity')
+        event_type = query_params.get('event_type')  # Add this
 
         filters = Q()
 
@@ -134,6 +135,11 @@ class EventListView(ListAPIView):
         if event_date:
             filters &= Q(date=event_date)
         if capacity:
-            filters &= Q(max_tickets__gte=int(capacity)) 
+            try:
+                filters &= Q(max_tickets__gte=int(capacity)) 
+            except ValueError:
+                pass  # Ignore invalid capacity values
+        if event_type:  # Apply filtering for event_type
+            filters &= Q(event_type__iexact=event_type)  
 
         return queryset.filter(filters)

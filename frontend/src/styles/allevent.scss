@@ -5,42 +5,73 @@
     margin-right: 10%;
 
     .main-container-eventlist-filter {
-        width: 30%;
-        background-color: rgb(230, 230, 230);
-
-        .filter-content {
+        width: 100%;
+        max-width: 350px; // Better responsiveness
+        background-color: #f4f4f4;
+        padding: 20px;
+        border-radius: 8px;
+        box-shadow: 0px 2px 10px rgba(0, 0, 0, 0.1);
+      
+        .filter-header {
+          text-align: center;
+          font-size: 22px;
+          font-weight: 600;
+          color: #333;
+          margin-bottom: 15px;
+        }
+      
+        .filter-form {
+          display: flex;
+          flex-direction: column;
+          gap: 12px; // Better spacing between filters
+      
+          .filter-group {
             display: flex;
             flex-direction: column;
-
-            p {
-                display: flex;
-                font-size: 20px;
-                font-weight: 600;
-                font-family: Arial, Helvetica, sans-serif;
-                justify-content: center;
-                align-items: center;
-            }
-
+            gap: 5px;
+      
             label {
-                margin-left: 20px;
-                font-family: Arial, sans-serif;
-                font-size: 14px;
-                font-weight: 600;
-                color: #333;
+              font-size: 14px;
+              font-weight: 600;
+              color: #444;
             }
-
-            input {
-                width: 75%;
-                margin-left: 20px;
-                font-size: 14px;
-                font-weight: 400;
-                font-family: Arial, sans-serif;
-                border: 1px solid #ccc;
-                border-radius: 5px;
-                outline: none;
+      
+            input,
+            select {
+              width: 100%;
+              padding: 8px;
+              font-size: 14px;
+              border: 1px solid #ccc;
+              border-radius: 5px;
+              outline: none;
+              transition: all 0.3s ease;
+      
+              &:focus {
+                border-color: #007bff;
+                box-shadow: 0px 0px 5px rgba(0, 123, 255, 0.3);
+              }
             }
+          }
         }
-    }
+      
+        .apply-btn {
+          background-color: #007bff;
+          color: white;
+          font-size: 16px;
+          font-weight: 600;
+          padding: 10px;
+          border: none;
+          border-radius: 5px;
+          cursor: pointer;
+          transition: all 0.3s ease;
+          margin-top: 10px;
+      
+          &:hover {
+            background-color: #0056b3;
+            transform: scale(1.05);
+          }
+        }
+      }      
 
     .main-container-eventlist-event {
         width: 70%;
