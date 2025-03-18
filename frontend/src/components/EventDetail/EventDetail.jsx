@@ -7,12 +7,26 @@ const EventDetail = () => {
   const [eventDetails, setEventDetails] = useState(null);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
+  const [userid, setUserId] = useState('');
+  const backendURL = "http://127.0.0.1:8000"; 
+  const fullImageURL =
+  eventDetails && eventDetails.event_image
+    ? eventDetails.event_image.startsWith("http")
+      ? eventDetails.event_image
+      : `${backendURL}${eventDetails.event_image}`
+    : "";
+
 
   useEffect(() => {
     const fetchEventDetails = async () => {
       try {
         const response = await axios.get(`http://127.0.0.1:8000/eventviewapi/${eventId}/`);
         setEventDetails(response.data);
+        console.log("This is the user",response.data.user);
+        console.log(response.data);
+        setUserId(response.data.user);
+        console.log(response.data.event_image);
+        console.log(userid);
         setLoading(false);
       } catch (err) {
         console.error("Error fetching event details:", err);
@@ -47,6 +61,9 @@ const EventDetail = () => {
     user,
   } = eventDetails;
 
+  // getting the contributor details 
+  
+
   return (
     <div className="bg-gray-100 min-h-screen">
       {/* Event Header */}
@@ -55,10 +72,10 @@ const EventDetail = () => {
           {/* Conditionally render the event image */}
           {event_image && (
             <img
-              src={event_image}
-              alt={name}
-              className="w-full md:w-1/3 rounded-lg shadow-lg"
-            />
+            src={fullImageURL}
+            alt={name}
+            className="w-full md:w-1/3 rounded-lg shadow-lg"
+          />
           )}
           <div className="flex-1">
             <h1 className="text-2xl font-bold">{name}</h1>
@@ -108,6 +125,7 @@ const EventDetail = () => {
       )}
 
       {/* Terms & Conditions */}
+      {/*
       <div className="max-w-4xl mx-auto p-6 bg-white mt-6 rounded-lg shadow-lg">
         <h2 className="text-xl font-semibold">Terms & Conditions</h2>
         <ul className="list-disc ml-6 mt-2 text-gray-700">
@@ -118,6 +136,7 @@ const EventDetail = () => {
           <li>If a ticket is lost or scanned already, no refund will be provided.</li>
         </ul>
       </div>
+      */}
     </div>
   );
 };
