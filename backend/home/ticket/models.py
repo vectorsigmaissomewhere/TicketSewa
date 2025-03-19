@@ -1,5 +1,6 @@
 from django.db import models
 from event.models import Event
+from django.conf import settings
 from account.models import User
 from contributor.models import Contributor  
 
@@ -7,13 +8,9 @@ class Ticket(models.Model):
     ticket_id = models.BigAutoField(primary_key=True) 
     ticket_type = models.CharField(max_length=255)
     ticket_price = models.PositiveIntegerField(null=True, blank=True)
-    event = models.ForeignKey(
-        Event,
-        on_delete=models.CASCADE,
-        related_name='tickets'
-    )
-    contributor = models.ForeignKey(
-        Contributor,
+    event = models.ForeignKey(Event, on_delete=models.CASCADE, related_name='tickets'  )
+    user = models.ForeignKey(
+        settings.AUTH_USER_MODEL, 
         on_delete=models.CASCADE,
         related_name='tickets'
     )

@@ -30,6 +30,7 @@ INSTALLED_APPS = [
     'account', 
     'event',
     'contributor',
+    'ticket',
     'rest_framework',
     'corsheaders'
 ]

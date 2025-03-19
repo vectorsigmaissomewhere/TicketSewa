@@ -6,6 +6,7 @@ from contributor.views import MakeContributorViewSet
 from event import views
 from event.views import EventModelViewSet, EventContribAuthModelViewSet, LikeViewSet, LikedEventViewSet
 from rest_framework.routers import DefaultRouter
+from ticket.views import TicketViewSet
 
 add_contributor_router = DefaultRouter()
 add_contributor_router.register('addcontributor', MakeContributorViewSet, basename='addcontributor')
@@ -25,6 +26,10 @@ likerouter.register('like_event', LikeViewSet, basename='like_event')
 #like_event_router = DefaultRouter()
 #like_event_router.register('like_event_list', LikedEventViewSet, basename='like_event_list')
 
+# ticket urls 
+ticketviewrouter = DefaultRouter()
+ticketviewrouter.register('ticketviewapi', TicketViewSet, basename='ticketviewapi')
+
 urlpatterns = [
     path('admin/', admin.site.urls),
     path('api/user/', include('account.urls')),
@@ -36,4 +41,5 @@ urlpatterns = [
     path('api/event/', include('event.urls')),
     path('', include(likerouter.urls)),   # url for like 
     path('liked-events/<int:user_id>/', LikedEventViewSet.as_view({'get': 'list'}), name='liked-events'), # get all the event that a user has liked 
+    path('', include(ticketviewrouter.urls)),# url for adding tikets in events 
 ]+ static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)
