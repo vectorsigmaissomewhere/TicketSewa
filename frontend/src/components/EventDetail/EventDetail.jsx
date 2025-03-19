@@ -1,6 +1,7 @@
 import React, { useEffect, useState } from "react";
 import { useParams } from "react-router-dom";
 import axios from "axios";
+import { decodeToken } from '../../Utils/authtoken';
 
 const EventDetail = () => {
   const { eventId } = useParams();  // Extract eventId from the URL
@@ -15,8 +16,9 @@ const EventDetail = () => {
       ? eventDetails.event_image
       : `${backendURL}${eventDetails.event_image}`
     : "";
-
-
+  const token = localStorage.getItem("authToken");
+  const storedUserId = token ? decodeToken(token).user_id : null;
+  /*stored the response for being eligible to edit the eventdetail */
   useEffect(() => {
     const fetchEventDetails = async () => {
       try {
@@ -34,8 +36,18 @@ const EventDetail = () => {
         setLoading(false);
       }
     };
-
+    const fetchTicketAddCheck = async()=>{
+      try{
+        const response = await axios.get(`http://127.0.0.1:8000/api/checkticketadd/${eventId}/${storedUserId}/`);
+        console.log("Can I see the message");
+        console.log(response.data.checked);
+      }
+      catch(err){
+        console.log("Error fetching the results:", err);
+      }
+    }
     fetchEventDetails();
+    fetchTicketAddCheck();
   }, [eventId]);  // Re-fetch when eventId changes
 
   if (loading) {

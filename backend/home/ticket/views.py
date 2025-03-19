@@ -7,6 +7,8 @@ from rest_framework import viewsets
 from .serializers import TicketSerializer 
 from rest_framework.permissions import IsAuthenticated, AllowAny 
 from event.models import Event 
+from django.views import View 
+from rest_framework.views import APIView 
 
 class TicketViewSet(viewsets.ViewSet):
     def create(self, request):
@@ -48,3 +50,14 @@ class TicketViewSet(viewsets.ViewSet):
                 status=status.HTTP_201_CREATED
             )
         return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+
+
+# allow to add ticket if it's his event 
+class CheckTicketAddView(APIView):
+    def get(self, request, event_id, user_id):
+        try:
+            event = Event.objects.get(event_id=event_id, user__id=user_id)
+            return Response({'checked': 'True'}, status=status.HTTP_200_OK)
+        except Event.DoesNotExist:
+            return Response({'checked': 'False'}, status=status.HTTP_404_NOT_FOUND)
+

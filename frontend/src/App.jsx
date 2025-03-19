@@ -10,6 +10,7 @@ import AddTransaction from './components/Profile/AddTransaction';
 import AddModerator from './components/Profile/AddModerator';
 import AllEvent from './components/AllEvent/AllEvent'
 import EventDetail from './components/EventDetail/EventDetail';
+import UpdateEvent from './components/Profile/UpdateEvent';
 
 const App = () => {
   return (
@@ -26,6 +27,7 @@ const App = () => {
         <Route path='settings/moderator' element={<AddModerator />} />
         <Route path='/event' element={<AllEvent />} />
         <Route path='/eventdetail/:eventId' element={<EventDetail />} />
+        <Route path='/profile/updateevent/:eventId' element={<UpdateEvent />}/>
       </Routes>
     </Router>
   );

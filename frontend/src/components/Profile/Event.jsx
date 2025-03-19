@@ -4,8 +4,9 @@ import AddEvent from "../Profile/AddEvent";
 import BecomeContributor from "../Profile/BecomeContributor";
 import { decodeToken } from "../../Utils/authtoken";
 import axios from "axios";
-import { useParams } from "react-router-dom";
+import { useParams, useNavigate } from "react-router-dom";
 import { Heart } from "lucide-react";
+
 
 const Event = () => {
   const token = localStorage.getItem("authToken");
@@ -15,6 +16,7 @@ const Event = () => {
   const [userEventList, setUserEventList] = useState([]);
   const { eventContributorId } = useParams();
   const [likedEvents, setLikedEvents] = useState([]);
+  const navigate = useNavigate();
 
   useEffect(() => {
     if (!userId) return;
@@ -128,6 +130,15 @@ const Event = () => {
                         style={{ cursor: "pointer" }}
                       />
                     </div>
+                  )}
+                  {!eventContributorId && (
+                  <div className="update">
+                  <button 
+                    className="update-btn"
+                    onClick={()=> navigate(`/profile/updateevent/${event.event_id}`)}
+                    >
+                    Update</button>
+                  </div>
                   )}
                   <button className="event-btn">View Event Details</button>
                 </div>

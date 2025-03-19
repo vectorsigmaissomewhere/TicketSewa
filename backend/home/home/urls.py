@@ -6,7 +6,7 @@ from contributor.views import MakeContributorViewSet
 from event import views
 from event.views import EventModelViewSet, EventContribAuthModelViewSet, LikeViewSet, LikedEventViewSet
 from rest_framework.routers import DefaultRouter
-from ticket.views import TicketViewSet
+from ticket.views import TicketViewSet, CheckTicketAddView
 
 add_contributor_router = DefaultRouter()
 add_contributor_router.register('addcontributor', MakeContributorViewSet, basename='addcontributor')
@@ -30,6 +30,10 @@ likerouter.register('like_event', LikeViewSet, basename='like_event')
 ticketviewrouter = DefaultRouter()
 ticketviewrouter.register('ticketviewapi', TicketViewSet, basename='ticketviewapi')
 
+# check if the user can add the ticket or not 
+# check_ticket_addornot_router = DefaultRouter()
+# check_ticket_addornot_router.register('checkticketadd', CheckTicketAddView, basename='checkticketadd')
+
 urlpatterns = [
     path('admin/', admin.site.urls),
     path('api/user/', include('account.urls')),
@@ -42,4 +46,5 @@ urlpatterns = [
     path('', include(likerouter.urls)),   # url for like 
     path('liked-events/<int:user_id>/', LikedEventViewSet.as_view({'get': 'list'}), name='liked-events'), # get all the event that a user has liked 
     path('', include(ticketviewrouter.urls)),# url for adding tikets in events 
+    path('api/checkticketadd/<int:event_id>/<int:user_id>/', CheckTicketAddView.as_view(), name='check-ticket-add'), # check if the event is added by user 
 ]+ static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)
