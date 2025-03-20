@@ -1,13 +1,26 @@
-import React from 'react'
+import React, { useState, useEffect } from 'react'
 import Navbar from '../Home/Navbar'
 import Footer from '../Home/Footer'
 import { useNavigate } from 'react-router-dom'
+import axios from "axios"
+
 const Home = () => {
   const navigate = useNavigate();
   const navToEvent = (e) => {
     e.preventDefault();
     navigate("/event");
   };
+  const [isfeaturedEvent, setIsFeaturedEvent] = useState([]);
+  useEffect(() => {
+    axios.get('http://127.0.0.1:8000/featureviewapi/')
+      .then(response => {
+        setIsFeaturedEvent(response.data);
+        console.log(response.data)
+      })
+      .catch(error => {
+        console.log(error);
+      });
+  }, []);
 
   return (
     <>
@@ -179,46 +192,25 @@ const Home = () => {
           <aside className="w-full lg:w-1/4 lg:pl-8">
             <h2 className="text-xl font-semibold mb-4">Featured</h2>
             <div className="space-y-4">
-              {[
-                {
-                  name: "Rock Fiesta",
-                  details: "An epic rock concert in your city.",
-                  image: "https://m.media-amazon.com/images/I/71WJlUBG91L._AC_SL1273_.jpg",
-                },
-                {
-                  name: "Championship Finals",
-                  details: "Witness the ultimate showdown.",
-                  image:
-                    "https://d1csarkz8obe9u.cloudfront.net/themedlandingpages/tlp_hero_concert-posters-cf75300061d3ed9b67842abf57ce0ef9.jpg?ts%20=%201699434317",
-                },
-                {
-                  name: "Art Gala 2025",
-                  details: "A celebration of modern art.",
-                  image:
-                    "https://marketplace.canva.com/EAFIygYzkes/1/0/1131w/canva-blue-minimalist-concert-music-cover-poster-CGNgQz4KqL0.jpg",
-                },
-                {
-                  name: "Family Fun Fest",
-                  details: "A day full of joy for the whole family.",
-                  image:
-                    "https://cdn.myportfolio.com/76ce5144-333f-4edb-9e00-1169625819f7/c1d371ba-43a7-4c4c-8291-16de1511f1f6_rw_3840.jpg?h=6951017f1504a7f845fdaf1d82fa747e",
-                },
-              ].map((event, index) => (
-                <div key={index} className="flex bg-white rounded shadow overflow-hidden">
+              {isfeaturedEvent.map((event, index) => (
+                <div
+                  key={index}
+                  className="flex bg-white rounded shadow overflow-hidden cursor-pointer"
+                  onClick={() => navigate(`/eventdetail/${event.event_id}`)} // Add onClick here for navigation
+                >
                   <img
-                    src={event.image}
+                    src={`http://127.0.0.1:8000${event.event_image}`}
                     alt={event.name}
                     className="w-1/3 h-24 object-cover"
                   />
                   <div className="p-2 flex-1">
                     <h3 className="text-lg font-semibold">{event.name}</h3>
-                    <p className="text-gray-600">{event.details}</p>
+                    <p className="text-gray-600">{event.city}</p>
                   </div>
                 </div>
               ))}
             </div>
           </aside>
-
         </div>
       </div>
       <Footer />

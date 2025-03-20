@@ -140,7 +140,7 @@ const Event = () => {
                     Update</button>
                   </div>
                   )}
-                  <button className="event-btn">View Event Details</button>
+                  <button className="event-btn" onClick={() => navigate(`/eventdetail/${event.event_id}`)}>View Event Details</button>
                 </div>
               </div>
             ))}

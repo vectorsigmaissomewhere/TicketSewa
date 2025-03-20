@@ -143,3 +143,10 @@ class EventListView(ListAPIView):
             filters &= Q(event_type__iexact=event_type)  
 
         return queryset.filter(filters)
+
+# get the is_featured lastest events 
+class IsFeaturedViewSet(viewsets.ViewSet):
+    def list(self, request):
+        featured_events = Event.objects.filter(is_featured=True).order_by('-created_at')[:10]
+        serializer = EventSerializer(featured_events, many=True)
+        return Response(serializer.data)
