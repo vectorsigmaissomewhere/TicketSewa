@@ -26,6 +26,10 @@ const Navbar = () => {
     localStorage.removeItem('authToken')
     navigate('/');
   }
+  const handleCategoryClick = (category) => {
+    navigate(`/event?category=${category}`);;
+  };
+
   return (
     <nav className="bg-indigo-950 text-white px-5 py-3">
       <div className="container mx-auto flex justify-between items-center flex-wrap">
@@ -66,7 +70,7 @@ const Navbar = () => {
           <li>
             <a
               href="#"
-              className="block md:inline hover:text-blue-400 transition duration-300"
+              className="block md:inline hover:text-blue-400 transition duration-300" onClick={()=> handleCategoryClick("concert")}
             >
               Concerts
             </a>
@@ -74,7 +78,7 @@ const Navbar = () => {
           <li>
             <a
               href="#"
-              className="block md:inline hover:text-blue-400 transition duration-300"
+              className="block md:inline hover:text-blue-400 transition duration-300" onClick={()=> handleCategoryClick("sport")}
             >
               Sports
             </a>
@@ -82,7 +86,7 @@ const Navbar = () => {
           <li>
             <a
               href="#"
-              className="block md:inline hover:text-blue-400 transition duration-300"
+              className="block md:inline hover:text-blue-400 transition duration-300" onClick={()=> handleCategoryClick("art")}
             >
               Arts
             </a>
@@ -90,7 +94,7 @@ const Navbar = () => {
           <li>
             <a
               href="#"
-              className="block md:inline hover:text-blue-400 transition duration-300"
+              className="block md:inline hover:text-blue-400 transition duration-300" onClick={()=> handleCategoryClick("family")}
             >
               Family
             </a>

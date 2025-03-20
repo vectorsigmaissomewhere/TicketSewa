@@ -3,9 +3,12 @@ import "../../styles/allevent.scss";
 import { Heart } from "lucide-react";
 import { decodeToken } from "../../Utils/authtoken";
 import axios from "axios";
-import { useNavigate } from "react-router-dom";
+import { useNavigate, useLocation } from "react-router-dom";
 
 const EventList = () => {
+  const location = useLocation();
+  const queryParams = new URLSearchParams(location.search);
+  const category = queryParams.get("category");
   const [events, setEvents] = useState([]);
   const [likedEvents, setLikedEvents] = useState([]);
   const [filters, setFilters] = useState({
@@ -24,10 +27,11 @@ const EventList = () => {
 
   useEffect(() => {
     fetchEvents();
-  }, []);
+  }, [location]);
 
   useEffect(() => {
     fetchEvents();
+    navigate("/event");
   }, [filters]); // Fetch events whenever filters change
 
   const fetchEvents = () => {
@@ -37,6 +41,9 @@ const EventList = () => {
         queryParams.append(key, filters[key]);
       }
     });
+    if (category) {
+      queryParams.append("event_type", category);
+    }
 
     const apiUrl = `http://127.0.0.1:8000/api/event/event-list/?${queryParams}`;
     console.log("Fetching events from:", apiUrl); // Debugging log
