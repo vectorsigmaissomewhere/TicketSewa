@@ -9,8 +9,18 @@ from rest_framework.permissions import IsAuthenticated, AllowAny
 from event.models import Event 
 from django.views import View 
 from rest_framework.views import APIView 
+from event.serializers import EventSerializer
 
 class TicketViewSet(viewsets.ViewSet):
+    def retrieve(self, request, pk=None):
+        if pk is not None:
+            tickets = Ticket.objects.filter(event_id=pk)
+            if tickets.exists():
+                serializer = TicketSerializer(tickets, many=True)  
+                return Response(serializer.data, status=status.HTTP_200_OK)
+            return Response({'msg': 'No tickets found for this event'}, status=status.HTTP_404_NOT_FOUND)
+        return Response({'msg': 'Event ID not provided'}, status=status.HTTP_400_BAD_REQUEST)
+
     def create(self, request):
         permission_classes = [IsAuthenticated]
 
