@@ -11,11 +11,20 @@ const Home = () => {
     navigate("/event");
   };
   const [isfeaturedEvent, setIsFeaturedEvent] = useState([]);
+  const [internationlEvent, setInternationalEvent] = useState([]);
   useEffect(() => {
     axios.get('http://127.0.0.1:8000/featureviewapi/')
       .then(response => {
         setIsFeaturedEvent(response.data);
         console.log(response.data)
+      })
+      .catch(error => {
+        console.log(error);
+      });
+    axios.get('http://127.0.0.1:8000/internationaleventapi/')
+      .then(response => {
+        setInternationalEvent(response.data);
+        console.log(response.data);
       })
       .catch(error => {
         console.log(error);
@@ -143,44 +152,16 @@ const Home = () => {
               <h2 className="text-2xl font-bold text-center mb-6">International Tour</h2>
               <div className="grid grid-cols-1 sm:grid-cols-2 gap-6">
                 {/* Cards */}
-                {[
-                  {
-                    category: "Concerts",
-                    title: "Rajesh Dai",
-                    link: "All International Concerts",
-                    image: "https://m.media-amazon.com/images/I/71WJlUBG91L._AC_SL1273_.jpg",
-                  },
-                  {
-                    category: "Sports",
-                    title: "SPR vs JAB",
-                    link: "All International Sports",
-                    image: "https://d1csarkz8obe9u.cloudfront.net/themedlandingpages/tlp_hero_concert-posters-cf75300061d3ed9b67842abf57ce0ef9.jpg?ts%20=%201699434317",
-                  },
-                  {
-                    category: "Arts",
-                    title: "Dot Anime Con",
-                    link: "All International Arts",
-                    image: "https://marketplace.canva.com/EAFIygYzkes/1/0/1131w/canva-blue-minimalist-concert-music-cover-poster-CGNgQz4KqL0.jpg",
-                  },
-                  {
-                    category: "Family Shows",
-                    title: "Ko Banchha Crorepati",
-                    link: "All International Family Shows",
-                    image: "https://cdn.myportfolio.com/76ce5144-333f-4edb-9e00-1169625819f7/c1d371ba-43a7-4c4c-8291-16de1511f1f6_rw_3840.jpg?h=6951017f1504a7f845fdaf1d82fa747e",
-                  },
-                ].map((item, index) => (
-                  <div key={index} className="bg-gray-100 rounded-lg shadow-md overflow-hidden">
+                {internationlEvent.map((item, index) => (
+                  <div key={index} className="bg-gray-100 rounded-lg shadow-md overflow-hidden cursor-pointer" onClick={() => navigate(`/eventdetail/${item.event_id}`)}>
                     <img
-                      src={item.image}
+                      src={`http://127.0.0.1:8000${item.event_image}`}
                       alt={item.title}
                       className="w-full h-40 object-cover"
                     />
                     <div className="p-4">
-                      <p className="text-gray-600">{item.category}</p>
-                      <h3 className="text-lg font-bold">{item.title}</h3>
-                      <a href="#" className="text-blue-500 hover:underline">
-                        {item.link}
-                      </a>
+                      <p className="text-gray-600">{item.event_type}</p>
+                      <h3 className="text-lg font-bold">{item.name}</h3>
                     </div>
                   </div>
                 ))}

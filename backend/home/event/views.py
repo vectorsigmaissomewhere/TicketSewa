@@ -150,3 +150,10 @@ class IsFeaturedViewSet(viewsets.ViewSet):
         featured_events = Event.objects.filter(is_featured=True).order_by('-created_at')[:10]
         serializer = EventSerializer(featured_events, many=True)
         return Response(serializer.data)
+
+# get the international posts 
+class GetInternationalEventViewSet(viewsets.ViewSet):
+    def list(self, request):
+        international_events = Event.objects.exclude(country="Nepal").order_by("-created_at")[:4]
+        serializer = EventSerializer(international_events, many=True)
+        return Response(serializer.data)
