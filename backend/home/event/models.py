@@ -30,6 +30,7 @@ class Event(models.Model):
     ticket_active = models.BooleanField(default=True)  
     max_tickets = models.PositiveIntegerField(null=True, blank=True)  
     is_featured = models.BooleanField(default=False) 
+    is_popular = models.BooleanField(default=False)
     created_at = models.DateTimeField(auto_now_add=True)  
     updated_at = models.DateTimeField(auto_now=True)  
 

@@ -4,7 +4,7 @@ from django.conf import settings
 from django.conf.urls.static import static
 from contributor.views import MakeContributorViewSet 
 from event import views
-from event.views import EventModelViewSet, EventContribAuthModelViewSet, LikeViewSet, LikedEventViewSet, IsFeaturedViewSet, GetInternationalEventViewSet
+from event.views import EventModelViewSet, EventContribAuthModelViewSet, LikeViewSet, LikedEventViewSet, IsFeaturedViewSet, GetInternationalEventViewSet, GetPopularConcertViewSet, GetPopularSportViewSet, GetPopularArtViewSet, GetPopularFamilyViewSet
 from rest_framework.routers import DefaultRouter
 from ticket.views import TicketViewSet, CheckTicketAddView
 
@@ -42,6 +42,19 @@ featureviewrouter.register('featureviewapi', IsFeaturedViewSet, basename='featur
 internationaleventviewrouter = DefaultRouter()
 internationaleventviewrouter.register('internationaleventapi', GetInternationalEventViewSet, basename='internationaleventapi')
 
+# popular events 
+concertpopulareventviewrouter = DefaultRouter()
+concertpopulareventviewrouter.register('popularconcerteventapi', GetPopularConcertViewSet, basename='popularconcerteventapi')
+
+sportpopulareventviewrouter = DefaultRouter()
+sportpopulareventviewrouter.register('popularsporteventapi',  GetPopularSportViewSet, basename='popularsporteventapi')
+
+artpopulareventviewrouter = DefaultRouter()
+artpopulareventviewrouter.register('populararteventapi', GetPopularArtViewSet, basename='populararteventapi')
+
+familypopularviewrouter = DefaultRouter()
+familypopularviewrouter.register('popularfamilyeventapi', GetPopularFamilyViewSet, basename='popularfamilyeventapi')
+
 urlpatterns = [
     path('admin/', admin.site.urls),
     path('api/user/', include('account.urls')),
@@ -49,6 +62,10 @@ urlpatterns = [
     path('', include(eventviewrouter.urls)),
     path('', include(featureviewrouter.urls)), # for featured posts 
     path('', include(internationaleventviewrouter.urls)),
+    path('', include(concertpopulareventviewrouter.urls)), # for popular concert event  
+    path('', include(sportpopulareventviewrouter.urls)), # for popular sport event
+    path('', include(artpopulareventviewrouter.urls)),# for popular art event
+    path('', include(familypopularviewrouter.urls)),# for popular family  
     path('events/user/<int:user_id>/', event_user_view, name='event-user-list'), # get the event according to the user id 
     path('addcontributor/', MakeContributorViewSet.as_view({'post': 'create'}), name='add-contributor'),
     path('api/contributor/', include('contributor.urls')),

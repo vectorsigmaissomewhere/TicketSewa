@@ -32,9 +32,9 @@ const Navbar = () => {
 
   return (
     <nav className="bg-indigo-950 text-white px-5 py-3">
-      <div className="container mx-auto flex justify-between items-center flex-wrap">
+      <div className="container mx-auto flex justify-between items-center flex-wrap cursor-pointer">
         {/* Logo */}
-        <div>
+        <div onClick={() => navigate('/')}>
           <a href="#" className="no-underline text-lg font-bold text-white">
             ticket<span className="text-blue-400">Sewa</span>
           </a>

@@ -157,3 +157,28 @@ class GetInternationalEventViewSet(viewsets.ViewSet):
         international_events = Event.objects.exclude(country="Nepal").order_by("-created_at")[:4]
         serializer = EventSerializer(international_events, many=True)
         return Response(serializer.data)
+
+# get 2 latest popular concert 
+class GetPopularConcertViewSet(viewsets.ViewSet):
+    def list(self, request):
+        popular_concert = Event.objects.filter(event_type="concert",is_popular=True).order_by("-created_at")[:4]
+        serializer = EventSerializer(popular_concert, many=True)
+        return Response(serializer.data)
+
+class GetPopularSportViewSet(viewsets.ViewSet):
+    def list(self, request):
+        popular_sport = Event.objects.filter(event_type="sport",is_popular=True).order_by("-created_at")[:4]
+        serializer = EventSerializer(popular_sport, many=True)
+        return Response(serializer.data)
+
+class GetPopularArtViewSet(viewsets.ViewSet):
+    def list(self, request):
+        popular_art = Event.objects.filter(event_type="art",is_popular=True).order_by("-created_at")[:4]
+        serializer = EventSerializer(popular_art, many=True)
+        return Response(serializer.data)
+
+class GetPopularFamilyViewSet(viewsets.ViewSet):
+    def list(self, request):
+        popular_family = Event.objects.filter(event_type="family",is_popular=True).order_by("-created_at")[:4]
+        serializer = EventSerializer(popular_family, many=True)
+        return Response(serializer.data)

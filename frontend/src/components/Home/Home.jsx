@@ -12,6 +12,13 @@ const Home = () => {
   };
   const [isfeaturedEvent, setIsFeaturedEvent] = useState([]);
   const [internationlEvent, setInternationalEvent] = useState([]);
+  const [popularConcert, setPopularConcert] = useState([]);
+  const [popularSport, setPopularSport] = useState([]);
+  const [popularArt, setPopularArt] = useState([]);
+  const [popularFamily, setPopularFamily] = useState([]);
+  const handleCategoryClick = (category) => {
+    navigate(`/event?category=${category}`);;
+  };2
   useEffect(() => {
     axios.get('http://127.0.0.1:8000/featureviewapi/')
       .then(response => {
@@ -24,6 +31,38 @@ const Home = () => {
     axios.get('http://127.0.0.1:8000/internationaleventapi/')
       .then(response => {
         setInternationalEvent(response.data);
+        console.log(response.data);
+      })
+      .catch(error => {
+        console.log(error);
+      });
+    axios.get('http://127.0.0.1:8000/popularconcerteventapi/')
+      .then(response => {
+        setPopularConcert(response.data);
+        console.log(response.data);
+      })
+      .catch(error => {
+        console.log(error);
+      });
+    axios.get('http://127.0.0.1:8000/popularsporteventapi/')
+      .then(response => {
+        setPopularSport(response.data);
+        console.log(response.data);
+      })
+      .catch(error => {
+        console.log(error);
+      });
+    axios.get('http://127.0.0.1:8000/populararteventapi/')
+      .then(response => {
+        setPopularArt(response.data);
+        console.log(response.data);
+      })
+      .catch(error => {
+        console.log(error);
+      });
+    axios.get('http://127.0.0.1:8000/popularfamilyeventapi/')
+      .then(response => {
+        setPopularFamily(response.data);
         console.log(response.data);
       })
       .catch(error => {
@@ -88,64 +127,44 @@ const Home = () => {
                 ))}
               </div>
             </section>
-
+            
             {/* Popular Near You */}
             <section className="mt-8">
               <h2 className="text-xl font-semibold mb-4">Popular Near You</h2>
+
               {[
-                {
-                  category: "Concerts",
-                  events: [
-                    { name: "Rock Fest 2024", image: "https://m.media-amazon.com/images/I/71WJlUBG91L._AC_SL1273_.jpg" },
-                    { name: "Jazz Night Live", image: "https://d1csarkz8obe9u.cloudfront.net/themedlandingpages/tlp_hero_concert-posters-cf75300061d3ed9b67842abf57ce0ef9.jpg?ts%20=%201699434317" },
-                  ],
-                },
-                {
-                  category: "Sports",
-                  events: [
-                    { name: "Grand Slam Finals", image: "https://marketplace.canva.com/EAFIygYzkes/1/0/1131w/canva-blue-minimalist-concert-music-cover-poster-CGNgQz4KqL0.jpg" },
-                    { name: "City Marathon 2024", image: "https://cdn.myportfolio.com/76ce5144-333f-4edb-9e00-1169625819f7/c1d371ba-43a7-4c4c-8291-16de1511f1f6_rw_3840.jpg?h=6951017f1504a7f845fdaf1d82fa747e" },
-                  ],
-                },
-                {
-                  category: "Arts",
-                  events: [
-                    { name: "Art Expo 2024", image: "https://m.media-amazon.com/images/I/71WJlUBG91L._AC_SL1273_.jpg" },
-                    { name: "Creative Minds Gallery", image: "https://d1csarkz8obe9u.cloudfront.net/themedlandingpages/tlp_hero_concert-posters-cf75300061d3ed9b67842abf57ce0ef9.jpg?ts%20=%201699434317" },
-                  ],
-                },
-                {
-                  category: "Family",
-                  events: [
-                    { name: "Fun Fair Carnival", image: "https://marketplace.canva.com/EAFIygYzkes/1/0/1131w/canva-blue-minimalist-concert-music-cover-poster-CGNgQz4KqL0.jpg" },
-                    { name: "Kids Wonderland Adventure", image: "https://cdn.myportfolio.com/76ce5144-333f-4edb-9e00-1169625819f7/c1d371ba-43a7-4c4c-8291-16de1511f1f6_rw_3840.jpg?h=6951017f1504a7f845fdaf1d82fa747e" },
-                  ],
-                },
+                { category: "Concerts", events: popularConcert.slice(0, 2) },
+                { category: "Sports", events: popularSport.slice(0, 2) },
+                { category: "Arts", events: popularArt.slice(0, 2) },
+                { category: "Family", events: popularFamily.slice(0, 2) },
               ].map((categoryData, index) => (
-                <div key={index} className="mb-6">
-                  <div className="flex justify-between items-center mb-4">
-                    <h3 className="text-lg font-semibold">{categoryData.category}</h3>
-                    <button className="text-blue-500 hover:underline">See All {categoryData.category}</button>
-                  </div>
-                  <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-                    {categoryData.events.map((event, i) => (
-                      <div key={i} className="bg-white rounded shadow overflow-hidden">
-                        <img
-                          src={event.image}
-                          alt={event.name}
-                          className="w-full h-auto"
-                        />
-                        <div className="p-4">
-                          <h4 className="text-lg font-semibold">{event.name}</h4>
-                          <p className="text-gray-600">Event details</p>
+                categoryData.events.length > 0 && (  // Only render if there are events
+                  <div key={index} className="mb-6">
+                    <div className="flex justify-between items-center mb-4">
+                      <h3 className="text-lg font-semibold">{categoryData.category}</h3>
+                      {/*<button className="text-blue-500 hover:underline cursor-pointer" onClick={() => handleCategoryClick(categoryData.key)}>
+                        See All {categoryData.category} 
+                      </button>*/}
+                    </div>
+                    <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                      {categoryData.events.map((event, i) => (
+                        <div key={i} className="bg-white rounded shadow overflow-hidden" onClick={() => navigate(`/eventdetail/${event.event_id}`)}>
+                          <img
+                            src={`http://127.0.0.1:8000${event.event_image}`}
+                            alt={event.name}
+                            className="w-full h-auto"
+                          />
+                          <div className="p-4">
+                            <h4 className="text-lg font-semibold">{event.name}</h4>
+                            <p className="text-gray-600">{event.description || "Event details"}</p>
+                          </div>
                         </div>
-                      </div>
-                    ))}
+                      ))}
+                    </div>
                   </div>
-                </div>
+                )
               ))}
             </section>
-
 
             {/* International Tour Section */}
             <section className="bg-white rounded shadow p-6">
