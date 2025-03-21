@@ -58,6 +58,16 @@ class EventModelViewSet(viewsets.ViewSet):
                 status=status.HTTP_201_CREATED
             )
         return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+    
+    def update(self, request, pk):
+        event = get_object_or_404(Event, event_id=pk)
+        serializer = EventSerializer(event, data=request.data, partial=True)  # Allow partial updates
+        if serializer.is_valid():
+            serializer.save()
+            return Response({'msg': 'Event Updated Successfully', 'data': serializer.data})
+        print(serializer.errors)  
+        return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+
 
 # list event according to the userid
 class EventContribAuthModelViewSet(viewsets.ViewSet):

@@ -124,13 +124,13 @@ const Navbar = () => {
           )}
         </div>
       </div>
-
       {/* Conditionally Render Search Form */}
+      {/*
       {menuOpen && (
         <div className="bg-slate-300 justify-center py-4 mx-5 md:mx-20 px-5 my-2">
           <form>
             <div className="flex flex-wrap items-center gap-4">
-              {/* First Input */}
+              {/* First Input */} {/*
               <input
                 type="text"
                 id="first_name"
@@ -139,7 +139,7 @@ const Navbar = () => {
                 required
               />
 
-              {/* Select Input */}
+              {/* Select Input */} {/*
               <select
                 name="language"
                 className="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 w-full sm:w-64 p-2.5"
@@ -149,7 +149,7 @@ const Navbar = () => {
                 <option value="Nepali">Nepali</option>
               </select>
 
-              {/* Second Input */}
+              {/* Second Input */}{/*
               <input
                 type="text"
                 id="company"
@@ -158,7 +158,7 @@ const Navbar = () => {
                 required
               />
 
-              {/* Submit Button */}
+              {/* Submit Button */}{/*
               <button
                 type="submit"
                 className="text-white bg-blue-700 hover:bg-blue-800 focus:ring-4 focus:outline-none focus:ring-blue-300 font-medium rounded-lg text-sm w-full sm:w-auto px-5 py-2.5"
@@ -168,7 +168,8 @@ const Navbar = () => {
             </div>
           </form>
         </div>
-      )}
+        
+      )}*/}
     </nav>
   );
 };
