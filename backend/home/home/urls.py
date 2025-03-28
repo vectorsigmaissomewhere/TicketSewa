@@ -74,4 +74,6 @@ urlpatterns = [
     path('liked-events/<int:user_id>/', LikedEventViewSet.as_view({'get': 'list'}), name='liked-events'), # get all the event that a user has liked 
     path('', include(ticketviewrouter.urls)),# url for adding tikets in events 
     path('api/checkticketadd/<int:event_id>/<int:user_id>/', CheckTicketAddView.as_view(), name='check-ticket-add'), # check if the event is added by user 
+    # payment
+    path('payment/', include('payment.urls')), 
 ]+ static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)

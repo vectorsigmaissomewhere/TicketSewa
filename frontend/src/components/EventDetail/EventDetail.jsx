@@ -141,7 +141,7 @@ const EventDetail = () => {
                 Book Now
               </button>
               {openPopup && (
-                <div className="fixed inset-0 flex items-center justify-center bg-black bg-opacity-50">
+                <div className="fixed inset-0 flex items-center justify-center bg-black bg-opacity-50 z-20">
                   <div className="rounded-md p-6 bg-white text-black w-5/6 md:w-1/3 h-[80vh] overflow-y-auto">
                     <div className="flex flex-row justify-between">
                       <h2 className="font-sans text-2xl font-bold">Payment</h2>
@@ -192,7 +192,7 @@ const EventDetail = () => {
 
       {/* Location Map */}
       {city && country && (
-        <div className="max-w-4xl mx-auto p-6 bg-white mt-6 rounded-lg shadow-lg">
+        <div className="max-w-4xl mx-auto p-6 bg-white mt-6 rounded-lg shadow-lg z-10">
           <MapContainer
             center={[latitude, longitude]}
             zoom={13}

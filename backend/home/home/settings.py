@@ -31,6 +31,7 @@ INSTALLED_APPS = [
     'event',
     'contributor',
     'ticket',
+    'payment',
     'rest_framework',
     'corsheaders'
 ]
@@ -187,5 +188,12 @@ EMAIL_USE_TLS = True
 # image url 
 MEDIA_URL = '/media/'
 MEDIA_ROOT = BASE_DIR / 'media'
+
+# khalti
+KHALTI_SECRET_KEY = "470361cd4cd147498123c353d461bd53"
+KHALTI_PUBLIC_KEY = "f739aa5f6bb746b9998ec60cd39dd5cf"
+KHALTI_VERIFY_URL = "https://khalti.com/api/v2/payment/verify/"
+KHALTI_API_URL = "https://dev.khalti.com/api/v2/"
+
 
 APPEND_SLASH = False
