@@ -23,6 +23,9 @@ const EventDetail = () => {
   const [openPopup, setOpenPopup] = useState(false);
   const [tickets, setTickets] = useState([]);
   const [userdetail, setUserDetail] = useState([]);
+  const [storeduserdetail, setStoredUserDetail] = useState([]);
+  const [storedusername, setStoredUserName] = useState('');
+  const [storeduseremail, setStoredUserEmail] = useState('');
   const [username, setUserName] = useState('');
   const [location, setUserLocation] = useState('');
   const [latitude, setEventLatitude] = useState('');
@@ -67,10 +70,27 @@ const EventDetail = () => {
         console.log("Error fetching the results:", err);
       }
     }
+    const fetchStoredUserDetail = async () => {
+      try{
+        const response = await axios.get(`http://127.0.0.1:8000/api/user/profile-by-id/${storedUserId}/`);
+        setStoredUserDetail(response.data);
+        console.log("This is the name",response.data.name);
+        setStoredUserName(response.data.name);
+        setStoredUserEmail(response.data.email);
+        console.log(storedusername);
+        console.log(storeduseremail);
+        console.log("This is the response from the storeduserid");
+        console.log(response.data)
+      }
+      catch(err){
+        console.log(err);
+      }
+    }
     fetchEventTickets();
     fetchEventDetails();
     fetchTicketAddCheck();
-  }, [eventId]);  // Re-fetch when eventId changes 
+    fetchStoredUserDetail();
+  }, [eventId]);  
 
   useEffect(() => {
     const fetchUserDetail = async () => {
@@ -98,7 +118,6 @@ const EventDetail = () => {
     return <div>{error}</div>;
   }
 
-  // Destructure the event data
   const {
     name,
     event_image,
@@ -114,6 +133,43 @@ const EventDetail = () => {
   } = eventDetails;
 
   // getting the contributor details 
+
+
+  // handle payment 
+  const handlePayment = async (ticket_id, ticket_type,ticket_price) =>{
+    try{
+      sessionStorage.removeItem("paymentDetails");
+      const response = await axios.post("http://127.0.0.1:8000/payment/initiate-payment/",{
+        amount: ticket_price, 
+        purchase_order_id: "order_123",
+        purchase_order_name: "Test Order",
+        ticket_id: ticket_id,
+        ticket_type: ticket_type,
+        event_id: eventId,
+        customer_userid: storedUserId,
+        customer_name: storedusername,       
+        customer_email: storeduseremail,
+      });
+      if(response.data.payment_url){
+        sessionStorage.setItem("paymentDetails", JSON.stringify({
+          amount: ticket_price,
+          purchase_order_id: "order_123",
+          purchase_order_name: "Test Order",
+          ticket_id: ticket_id,
+          ticket_type: ticket_type,
+          event_id: eventId,
+          customer_userid: storedUserId,
+          customer_name: storedusername,
+          customer_email: storeduseremail,
+          check: true,  
+        }));
+        window.location.href = response.data.payment_url;
+      }
+    }
+    catch(error){
+      console.error("Payment initiation failed", error);
+    }
+  }
 
 
   return (
@@ -158,7 +214,7 @@ const EventDetail = () => {
                             </h2>
                             <h2 className="font-sans text-xl font-bold">Rs: {ticket.ticket_price}</h2>
                           </div>
-                          <button className="w-full mt-4 bg-green-500 hover:bg-pink-600 text-white px-6 py-2 rounded-lg">
+                          <button className="w-full mt-4 bg-green-500 hover:bg-pink-600 text-white px-6 py-2 rounded-lg" onClick={ () => handlePayment(ticket.ticket_id, ticket.ticket_type, ticket.ticket_price)}>
                             Pay
                           </button>
                         </div>

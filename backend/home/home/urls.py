@@ -7,6 +7,7 @@ from event import views
 from event.views import EventModelViewSet, EventContribAuthModelViewSet, LikeViewSet, LikedEventViewSet, IsFeaturedViewSet, GetInternationalEventViewSet, GetPopularConcertViewSet, GetPopularSportViewSet, GetPopularArtViewSet, GetPopularFamilyViewSet
 from rest_framework.routers import DefaultRouter
 from ticket.views import TicketViewSet, CheckTicketAddView
+from payment.views import PaymentDataSaveViewSet
 
 add_contributor_router = DefaultRouter()
 add_contributor_router.register('addcontributor', MakeContributorViewSet, basename='addcontributor')
@@ -55,6 +56,10 @@ artpopulareventviewrouter.register('populararteventapi', GetPopularArtViewSet, b
 familypopularviewrouter = DefaultRouter()
 familypopularviewrouter.register('popularfamilyeventapi', GetPopularFamilyViewSet, basename='popularfamilyeventapi')
 
+# save payment 
+paymentsaveviewrouter = DefaultRouter()
+paymentsaveviewrouter.register('paymentsaveapi', PaymentDataSaveViewSet, basename='paymentsaveapi')
+
 urlpatterns = [
     path('admin/', admin.site.urls),
     path('api/user/', include('account.urls')),
@@ -66,6 +71,7 @@ urlpatterns = [
     path('', include(sportpopulareventviewrouter.urls)), # for popular sport event
     path('', include(artpopulareventviewrouter.urls)),# for popular art event
     path('', include(familypopularviewrouter.urls)),# for popular family  
+    path('', include(paymentsaveviewrouter.urls)), # for saving payment save router 
     path('events/user/<int:user_id>/', event_user_view, name='event-user-list'), # get the event according to the user id 
     path('addcontributor/', MakeContributorViewSet.as_view({'post': 'create'}), name='add-contributor'),
     path('api/contributor/', include('contributor.urls')),

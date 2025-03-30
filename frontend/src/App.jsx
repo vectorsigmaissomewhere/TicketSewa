@@ -11,6 +11,7 @@ import AddModerator from './components/Profile/AddModerator';
 import AllEvent from './components/AllEvent/AllEvent'
 import EventDetail from './components/EventDetail/EventDetail';
 import UpdateEvent from './components/Profile/UpdateEvent';
+import PaymentSuccess from './components/EventDetail/PaymentSuccess';
 
 const App = () => {
   return (
@@ -28,6 +29,7 @@ const App = () => {
         <Route path='/event' element={<AllEvent />} />
         <Route path='/eventdetail/:eventId' element={<EventDetail />} />
         <Route path='/profile/updateevent/:eventId' element={<UpdateEvent />}/>
+        <Route path="/payment-success" element={<PaymentSuccess />} />
       </Routes>
     </Router>
   );
