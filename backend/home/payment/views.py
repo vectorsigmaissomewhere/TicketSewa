@@ -110,6 +110,11 @@ def get_payment_successdata(request):
 
 class PaymentDataSaveViewSet(viewsets.ViewSet):
     def create(self, request):
+        print("data before saving the data")
+        print(request.data)
+       # request.data['amount'] = int(request.data['amount'])
+        print("data after saving the data")
+        print(request.data)
         serializer = PaymentSerializer(data=request.data)
         if serializer.is_valid():
             serializer.save()

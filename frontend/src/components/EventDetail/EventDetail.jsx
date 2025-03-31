@@ -137,6 +137,7 @@ const EventDetail = () => {
 
   // handle payment 
   const handlePayment = async (ticket_id, ticket_type,ticket_price) =>{
+    console.log(`This is the ticket price ${ticket_price}`);
     try{
       sessionStorage.removeItem("paymentDetails");
       const response = await axios.post("http://127.0.0.1:8000/payment/initiate-payment/",{
@@ -157,6 +158,7 @@ const EventDetail = () => {
           purchase_order_name: "Test Order",
           ticket_id: ticket_id,
           ticket_type: ticket_type,
+          amount: ticket_price,
           event_id: eventId,
           customer_userid: storedUserId,
           customer_name: storedusername,

@@ -12,6 +12,7 @@ import AllEvent from './components/AllEvent/AllEvent'
 import EventDetail from './components/EventDetail/EventDetail';
 import UpdateEvent from './components/Profile/UpdateEvent';
 import PaymentSuccess from './components/EventDetail/PaymentSuccess';
+import PaymentSuccessResult from './components/EventDetail/PaymentSuccessResult';
 
 const App = () => {
   return (
@@ -30,6 +31,7 @@ const App = () => {
         <Route path='/eventdetail/:eventId' element={<EventDetail />} />
         <Route path='/profile/updateevent/:eventId' element={<UpdateEvent />}/>
         <Route path="/payment-success" element={<PaymentSuccess />} />
+        <Route path="/payment-result" element={<PaymentSuccessResult/>} />
       </Routes>
     </Router>
   );
