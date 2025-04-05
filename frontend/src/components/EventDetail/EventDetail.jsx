@@ -151,6 +151,7 @@ const EventDetail = () => {
         customer_name: storedusername,       
         customer_email: storeduseremail,
       });
+      // manipulate this response.data and this is how we can send the user id or secret key
       if(response.data.payment_url){
         sessionStorage.setItem("paymentDetails", JSON.stringify({
           amount: ticket_price,

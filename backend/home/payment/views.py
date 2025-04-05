@@ -13,7 +13,7 @@ KHALTI_API_URL = "https://dev.khalti.com/api/v2/epayment/initiate/"
 KHALTI_SECRET_KEY = "470361cd4cd147498123c353d461bd53"
 
 @api_view(["POST"])
-def initiate_payment(request):
+def initiate_payment(request): 
     "Initiate a payment request to khalti"
     data = request.data 
     print("Initiate the request")
@@ -37,13 +37,13 @@ def initiate_payment(request):
     print(request.data.get("customer_email"))
     print(request.data.get("customer_userid"))
     response = requests.post(KHALTI_API_URL, json=payload, headers=headers)
-    save_payment_data(request.data.get("event_id"), request.data.get("ticket_id"), request.data.get("userid"), request.data.get("amount"), request.data.get("customer_email"), request.data.get("customer_name"))
+    #save_payment_data(request.data.get("event_id"), request.data.get("ticket_id"), request.data.get("userid"), request.data.get("amount"), request.data.get("customer_email"), request.data.get("customer_name"))
     print(response.json())
     print("Payment Initiated")
     return Response(response.json(), status=response.status_code)
 
-def save_payment_data(event_id, ticket_id, user_id, amount, email, name):
-    print(event_id, ticket_id, user_id, amount, email, name)
+#def save_payment_data(event_id, ticket_id, user_id, amount, email, name):
+#    print(event_id, ticket_id, user_id, amount, email, name)
 
 
 @api_view(["POST"])
@@ -51,18 +51,21 @@ def verify_payment(request):
     # Verifies payment using khalti lookup API 
     print("Payment on replying on verify_payment section")
     print(request.data)
+    print("Trying to get the auth token from frontend")
+    print(request.session.get('authToken', 'default_value'))
     lookup_url = "https://dev.khalti.com/api/v2/epayment/lookup/"
     pidx = request.data.get("pidx")
-
+    print("Printing the user id")
+    print(request.user)
     if not pidx:
         return Response({"error":"Missing pidx"}, status=400)
     
     headers = headers = {"Authorization": f"Key {KHALTI_SECRET_KEY}", "Content-Type": "application/json"}
-    print(request.data.get("name"))
+    print(request.data.get("customer_info"))
     print("Payment done")
     response = requests.post(lookup_url, json={"pidx":pidx}, headers=headers)
     return Response(response.json(), status=response.status_code)
-
+ 
 @api_view(["POST"])
 def get_payment_successdata(request):
     """
@@ -120,3 +123,5 @@ class PaymentDataSaveViewSet(viewsets.ViewSet):
             serializer.save()
             return Response({'msg':'Data Created Successfully'}, status = status.HTTP_201_CREATED)
         return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+
+# store the transaction credential where the user will make the payment in 

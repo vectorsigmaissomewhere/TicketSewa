@@ -29,28 +29,32 @@ const Event = () => {
       .catch((error) => {
         console.error(error);
       });
-
+    if(!eventContributorId){
     axios
       .get(`http://127.0.0.1:8000/events/user/${userId}/`)
       .then((response) => {
         setUserEventList(response.data);
+        console.log("userId api being called");
       })
       .catch((error) => {
         console.error(error);
       });
+    }
   }, [userId]);
 
   useEffect(() => {
     if (!eventContributorId) return;
-
+    if(eventContributorId){
     axios
       .get(`http://127.0.0.1:8000/events/user/${eventContributorId}/`)
       .then((response) => {
         setEventList(response.data);
+        console.log("query user id api being called");
       })
       .catch((error) => {
         console.error(error);
       });
+    }
   }, [eventContributorId]);
 
   const handleLike = async (eventId) => {

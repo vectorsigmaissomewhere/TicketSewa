@@ -4,7 +4,7 @@ from django.conf import settings
 from django.conf.urls.static import static
 from contributor.views import MakeContributorViewSet 
 from event import views
-from event.views import EventModelViewSet, EventContribAuthModelViewSet, LikeViewSet, LikedEventViewSet, IsFeaturedViewSet, GetInternationalEventViewSet, GetPopularConcertViewSet, GetPopularSportViewSet, GetPopularArtViewSet, GetPopularFamilyViewSet
+from event.views import EventModelViewSet, EventContribAuthModelViewSet, LikeViewSet, LikedEventViewSet, IsFeaturedViewSet, GetInternationalEventViewSet, GetPopularConcertViewSet, GetPopularSportViewSet, GetPopularArtViewSet, GetPopularFamilyViewSet, VisitedEventViewSet
 from rest_framework.routers import DefaultRouter
 from ticket.views import TicketViewSet, CheckTicketAddView
 from payment.views import PaymentDataSaveViewSet
@@ -78,6 +78,7 @@ urlpatterns = [
     path('api/event/', include('event.urls')),
     path('', include(likerouter.urls)),   # url for like 
     path('liked-events/<int:user_id>/', LikedEventViewSet.as_view({'get': 'list'}), name='liked-events'), # get all the event that a user has liked 
+    path('visited-events/<int:user_id>/', VisitedEventViewSet.as_view({'get':'list'}), name='visited-events'), # get all the event that a user has visited 
     path('', include(ticketviewrouter.urls)),# url for adding tikets in events 
     path('api/checkticketadd/<int:event_id>/<int:user_id>/', CheckTicketAddView.as_view(), name='check-ticket-add'), # check if the event is added by user 
     # payment

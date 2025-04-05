@@ -15,9 +15,8 @@ from .models import Like
 from rest_framework.generics import ListAPIView
 from django.db.models import Q
 from rest_framework.filters import OrderingFilter
-
-
-
+from payment.models import Payment 
+from rest_framework.decorators import api_view 
 
 # list, retrieve and create there is another viewset for deleting and updating 
 class EventModelViewSet(viewsets.ViewSet):
@@ -113,6 +112,49 @@ class LikedEventViewSet(viewsets.ReadOnlyModelViewSet):
         serializer = self.get_serializer(liked_events, many=True)
         return Response(serializer.data)
 
+# get all the events the user has bought the ticket of 
+class VisitedEventViewSet(viewsets.ReadOnlyModelViewSet):
+    serializer_class = EventSerializer 
+    """
+    def list(self, request, user_id=None):
+        # get the particular user event_id from the Payment model, like all the event id 
+        visited_events = Payment.objects.filter(user=user_id).select_related('event')
+        # remove the duplicate event_id from 
+        event_ids = visited_events.values_list('event',flat=True).distinct()
+        # get all the event detail using the event_ids 
+        events = Event.objects.filter(event_id__in=event_ids)
+        # serialize the events and return them in the response 
+        serializer = self.serializer_class(events, many=True)
+        if serializer.data:
+            return Response(serializer.data)
+        return Response({'msg':'No events present'})
+    """
+    def get_queryset(self):
+        """
+        Override the get_queryset method to filter events based on the user ID.
+        This method will return a queryset of events the user has attended.
+        """
+        user_id = self.kwargs.get('user_id')  # Getting user_id from the URL
+        if user_id is None:
+            return Event.objects.none()  # Return an empty queryset if no user_id is provided
+        
+        # Filter payments for the given user and retrieve distinct events they have attended
+        visited_events = Payment.objects.filter(user=user_id).select_related('event')
+
+        # Get distinct event ids to ensure no duplicates
+        event_ids = visited_events.values_list('event', flat=True).distinct()
+
+        # Return the queryset of events
+        return Event.objects.filter(event_id__in=event_ids)
+
+    def list(self, request, *args, **kwargs):
+        """
+        Override the list method to return a list of events the user has attended.
+        """
+        queryset = self.get_queryset()  # Use the custom queryset
+        serializer = self.serializer_class(queryset, many=True)
+        return Response(serializer.data)
+
 # adding filter in Events 
 class EventListView(ListAPIView):
     serializer_class = EventSerializer
@@ -192,3 +234,14 @@ class GetPopularFamilyViewSet(viewsets.ViewSet):
         popular_family = Event.objects.filter(event_type="family",is_popular=True).order_by("-created_at")[:4]
         serializer = EventSerializer(popular_family, many=True)
         return Response(serializer.data)
+
+# get the user_id with the event_id 
+@api_view(['GET'])
+def event_user_api(request, event_id):
+    try:
+        event = Event.objects.get(event_id=event_id)
+        return Response({'user_id': event.user_id})
+    except Event.DoesNotExist:
+        return Response({'msg': "Event not found"}, status=404)
+
+
