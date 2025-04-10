@@ -17,6 +17,7 @@ from django.db.models import Q
 from rest_framework.filters import OrderingFilter
 from payment.models import Payment 
 from rest_framework.decorators import api_view 
+from .event_recommender import get_similar_events 
 
 # list, retrieve and create there is another viewset for deleting and updating 
 class EventModelViewSet(viewsets.ViewSet):
@@ -30,7 +31,12 @@ class EventModelViewSet(viewsets.ViewSet):
     def retrieve(self, request, pk=None):
         event = get_object_or_404(Event, event_id=pk)
         serializer = EventSerializer(event)
-        return Response(serializer.data)
+        similar_events = get_similar_events(pk, 10)
+        similar_events_serializer = EventSerializer(similar_events, many=True)
+        return Response({
+            "event": serializer.data,
+            "similar_events": similar_events_serializer.data
+        })
 
     def create(self, request):
         permission_classes = [IsAuthenticated]

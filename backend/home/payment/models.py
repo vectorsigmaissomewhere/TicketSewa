@@ -24,6 +24,7 @@ class Payment(models.Model):
         return f"{self.user} bought {self.ticket_type} for {self.amount}"
 
 # payment credential model 
+"""
 class Payment_Credential(models.Model):
     payment_credential_id = models.BigAutoField(primary_key=True)
     user = models.ForeignKey(
@@ -42,6 +43,6 @@ class Payment_Credential(models.Model):
     class Meta:
         verbose_name = "Payment Credential"
         verbose_name_plural = "Payment Credentials"
-
+"""
 
 

@@ -4,10 +4,15 @@ import axios from "axios";
 import { decodeToken } from '../../Utils/authtoken';
 import { MapContainer, Marker, Popup, TileLayer } from "react-leaflet";
 import "leaflet/dist/leaflet.css";
+import { Heart } from "lucide-react";
+import { useNavigate } from "react-router-dom";
 
 const EventDetail = () => {
   const { eventId } = useParams();  // Extract eventId from the URL
   const [eventDetails, setEventDetails] = useState(null);
+  const navigate = useNavigate();
+  const [suggestedEventDetails, setSuggestedEventDetails] = useState(null);
+  const [likedEvents, setLikedEvents] = useState([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
   const [userid, setUserId] = useState('');
@@ -24,6 +29,7 @@ const EventDetail = () => {
   const [tickets, setTickets] = useState([]);
   const [userdetail, setUserDetail] = useState([]);
   const [storeduserdetail, setStoredUserDetail] = useState([]);
+  
   const [storedusername, setStoredUserName] = useState('');
   const [storeduseremail, setStoredUserEmail] = useState('');
   const [username, setUserName] = useState('');
@@ -35,13 +41,18 @@ const EventDetail = () => {
     const fetchEventDetails = async () => {
       try {
         const response = await axios.get(`http://127.0.0.1:8000/eventviewapi/${eventId}/`);
-        setEventDetails(response.data);
-        console.log("This is the user", response.data.user);
+        setEventDetails(response.data.event);
+        setSuggestedEventDetails(response.data.similar_events);
+        console.log(`This is the similar events ${response.data.similar_events}`);
+        console.log(response.data.similar_events.forEach((event, index) => {
+  console.log(`Event ${index + 1}:`, event);
+}));
+        console.log("This is the user", response.data.event.user);
         console.log(response.data);
-        setUserId(response.data.user);
-        setEventLatitude(response.data.latitude);
-        setEventLongitude(response.data.longitude);
-        console.log(response.data.event_image);
+        setUserId(response.data.event.user);
+        setEventLatitude(response.data.event.latitude);
+        setEventLongitude(response.data.event.longitude);
+        console.log(response.data.event.event_image);
         console.log(userid);
         setLoading(false);
       } catch (err) {
@@ -71,10 +82,10 @@ const EventDetail = () => {
       }
     }
     const fetchStoredUserDetail = async () => {
-      try{
+      try {
         const response = await axios.get(`http://127.0.0.1:8000/api/user/profile-by-id/${storedUserId}/`);
         setStoredUserDetail(response.data);
-        console.log("This is the name",response.data.name);
+        console.log("This is the name", response.data.name);
         setStoredUserName(response.data.name);
         setStoredUserEmail(response.data.email);
         console.log(storedusername);
@@ -82,7 +93,7 @@ const EventDetail = () => {
         console.log("This is the response from the storeduserid");
         console.log(response.data)
       }
-      catch(err){
+      catch (err) {
         console.log(err);
       }
     }
@@ -90,7 +101,7 @@ const EventDetail = () => {
     fetchEventDetails();
     fetchTicketAddCheck();
     fetchStoredUserDetail();
-  }, [eventId]);  
+  }, [eventId]);
 
   useEffect(() => {
     const fetchUserDetail = async () => {
@@ -136,23 +147,23 @@ const EventDetail = () => {
 
 
   // handle payment 
-  const handlePayment = async (ticket_id, ticket_type,ticket_price) =>{
+  const handlePayment = async (ticket_id, ticket_type, ticket_price) => {
     console.log(`This is the ticket price ${ticket_price}`);
-    try{
+    try {
       sessionStorage.removeItem("paymentDetails");
-      const response = await axios.post("http://127.0.0.1:8000/payment/initiate-payment/",{
-        amount: ticket_price, 
+      const response = await axios.post("http://127.0.0.1:8000/payment/initiate-payment/", {
+        amount: ticket_price,
         purchase_order_id: "order_123",
         purchase_order_name: "Test Order",
         ticket_id: ticket_id,
         ticket_type: ticket_type,
         event_id: eventId,
         customer_userid: storedUserId,
-        customer_name: storedusername,       
+        customer_name: storedusername,
         customer_email: storeduseremail,
       });
       // manipulate this response.data and this is how we can send the user id or secret key
-      if(response.data.payment_url){
+      if (response.data.payment_url) {
         sessionStorage.setItem("paymentDetails", JSON.stringify({
           amount: ticket_price,
           purchase_order_id: "order_123",
@@ -164,15 +175,36 @@ const EventDetail = () => {
           customer_userid: storedUserId,
           customer_name: storedusername,
           customer_email: storeduseremail,
-          check: true,  
+          check: true,
         }));
         window.location.href = response.data.payment_url;
       }
     }
-    catch(error){
+    catch (error) {
       console.error("Payment initiation failed", error);
     }
   }
+  const handleLike = async (eventId) => {
+    try {
+      const response = await axios.post(
+        "http://127.0.0.1:8000/like_event/",
+        { event: eventId, user: userId },
+        {
+          headers: { Authorization: `Bearer ${localStorage.getItem("authToken")}` },
+        }
+      );
+
+      if (response.status === 201) {
+        setLikedEvents((prev) => [...prev, eventId]);
+      }
+    } catch (error) {
+      console.error("Error liking event:", error);
+    }
+  };
+  
+  const handleCheckContributor = (eventContributorId) => {
+    navigate(`/profile/${eventContributorId}`);
+  };
 
 
   return (
@@ -217,7 +249,7 @@ const EventDetail = () => {
                             </h2>
                             <h2 className="font-sans text-xl font-bold">Rs: {ticket.ticket_price}</h2>
                           </div>
-                          <button className="w-full mt-4 bg-green-500 hover:bg-pink-600 text-white px-6 py-2 rounded-lg" onClick={ () => handlePayment(ticket.ticket_id, ticket.ticket_type, ticket.ticket_price)}>
+                          <button className="w-full mt-4 bg-green-500 hover:bg-pink-600 text-white px-6 py-2 rounded-lg" onClick={() => handlePayment(ticket.ticket_id, ticket.ticket_type, ticket.ticket_price)}>
                             Pay
                           </button>
                         </div>
@@ -278,6 +310,48 @@ const EventDetail = () => {
         </ul>
       </div>
       */}
+      {/* Suggested contents  */}
+      <div className="max-w-4xl mx-auto p-6 bg-white mt-6 rounded-lg shadow-lg">
+        <h2 className="text-xl font-semibold">Suggested Events</h2>
+        <div className="main-container">
+          {suggestedEventDetails.length === 0 ? (
+            <p>No events found</p>
+          ) : (
+            suggestedEventDetails.map((event) => (
+              <div className="main-container-first" key={suggestedEventDetails.event_id}>
+                <div className="main-container-image">
+                  <img src={suggestedEventDetails.event_image} alt="Event" />
+                </div>
+                <div className="content">
+                  <div>
+                    <div className="title">{suggestedEventDetails.name}</div>
+                    <div className="time">
+                      📅 {new Date(suggestedEventDetails.date).toDateString()} - {suggestedEventDetails.time}
+                    </div>
+                  </div>
+                  <div>
+                    <button onClick={() => handleCheckContributor(suggestedEventDetails.user)}>Check Contributor</button>
+                  </div>
+                  <div className="like">
+                    <Heart
+                      size={24}
+                      color={likedEvents.includes(suggestedEventDetails.event_id) ? "red" : "gray"}
+                      onClick={() => handleLike(suggestedEventDetails.event_id)}
+                      style={{ cursor: "pointer" }}
+                    />
+                  </div>
+                  <button
+                    className="event-btn"
+                    onClick={() => navigate(`/eventdetail/${suggestedEventDetails.event_id}`)}
+                  >
+                    View Event Details
+                  </button>
+                </div>
+              </div>
+            ))
+          )}
+        </div>
+      </div>
     </div>
   );
 };
