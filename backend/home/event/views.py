@@ -18,6 +18,8 @@ from rest_framework.filters import OrderingFilter
 from payment.models import Payment 
 from rest_framework.decorators import api_view 
 from .event_recommender import get_similar_events 
+from .collaborative_event_recommender import recommend_events_for_user
+from django.db.models.functions import Now
 
 # list, retrieve and create there is another viewset for deleting and updating 
 class EventModelViewSet(viewsets.ViewSet):
@@ -31,12 +33,7 @@ class EventModelViewSet(viewsets.ViewSet):
     def retrieve(self, request, pk=None):
         event = get_object_or_404(Event, event_id=pk)
         serializer = EventSerializer(event)
-        similar_events = get_similar_events(pk, 10)
-        similar_events_serializer = EventSerializer(similar_events, many=True)
-        return Response({
-            "event": serializer.data,
-            "similar_events": similar_events_serializer.data
-        })
+        return Response(serializer.data)
 
     def create(self, request):
         permission_classes = [IsAuthenticated]
@@ -73,6 +70,33 @@ class EventModelViewSet(viewsets.ViewSet):
         print(serializer.errors)  
         return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
 
+# get the similar events 
+class SimilarEventModelViewSet(viewsets.ViewSet):
+    permission_classes = [AllowAny]
+    def retrieve(self, request, pk=None):
+        similar_events = get_similar_events(pk, 10)
+        similar_events_serializer = EventSerializer(similar_events, many=True)
+        return Response(similar_events_serializer.data)
+
+# get collborative event recommender 
+class CollaborativeEventModelViewSet(viewsets.ViewSet):
+    permission_classes = [AllowAny]
+
+    def retrieve(self, request, pk=None):
+        try:
+            user_id = int(pk)
+            events = recommend_events_for_user(user_id)
+            serialized = EventSerializer(events, many=True)
+            return Response(serialized.data)
+        except Exception as e:
+            return Response({"error": str(e)}, status=500)
+"""
+def recommended_events_view(request):
+    user = request.user
+    recommended = recommend_events_for_user(user)
+    # You can serialize and return via DRF if it's an API
+    return render(request, 'event/recommended.html', {'events': recommended})
+"""
 
 # list event according to the userid
 class EventContribAuthModelViewSet(viewsets.ViewSet):

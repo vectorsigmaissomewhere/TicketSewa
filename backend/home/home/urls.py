@@ -4,7 +4,7 @@ from django.conf import settings
 from django.conf.urls.static import static
 from contributor.views import MakeContributorViewSet 
 from event import views
-from event.views import EventModelViewSet, EventContribAuthModelViewSet, LikeViewSet, LikedEventViewSet, IsFeaturedViewSet, GetInternationalEventViewSet, GetPopularConcertViewSet, GetPopularSportViewSet, GetPopularArtViewSet, GetPopularFamilyViewSet, VisitedEventViewSet
+from event.views import EventModelViewSet, EventContribAuthModelViewSet, LikeViewSet, LikedEventViewSet, IsFeaturedViewSet, GetInternationalEventViewSet, GetPopularConcertViewSet, GetPopularSportViewSet, GetPopularArtViewSet, GetPopularFamilyViewSet, VisitedEventViewSet, SimilarEventModelViewSet, CollaborativeEventModelViewSet
 from rest_framework.routers import DefaultRouter
 from ticket.views import TicketViewSet, CheckTicketAddView
 from payment.views import PaymentDataSaveViewSet
@@ -15,6 +15,13 @@ add_contributor_router.register('addcontributor', MakeContributorViewSet, basena
 # router for listing, retrieving and adding event 
 eventviewrouter = DefaultRouter()
 eventviewrouter.register('eventviewapi', EventModelViewSet, basename='eventviewapi')
+
+# router for retrieving suggested event
+suggestedeventrouter = DefaultRouter()
+suggestedeventrouter.register('suggestedeventviewapi', SimilarEventModelViewSet, basename='suggestedeventviewapi')
+
+collaborativeeventrouter = DefaultRouter()
+collaborativeeventrouter.register('collaborativeeventviewapi', CollaborativeEventModelViewSet, basename='collaborativeeventviewapi')
 
 # Map the GET method to the 'list' action of EventContribAuthModelViewSet
 event_user_view = EventContribAuthModelViewSet.as_view({'get': 'list'})
@@ -65,6 +72,8 @@ urlpatterns = [
     path('api/user/', include('account.urls')),
     path('', include(add_contributor_router.urls)),
     path('', include(eventviewrouter.urls)),
+    path('', include(suggestedeventrouter.urls)), # get suggested events 
+    path('', include(collaborativeeventrouter.urls)), # get collaborative recommended events 
     path('', include(featureviewrouter.urls)), # for featured posts 
     path('', include(internationaleventviewrouter.urls)),
     path('', include(concertpopulareventviewrouter.urls)), # for popular concert event  

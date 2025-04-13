@@ -13,6 +13,7 @@ const Home = () => {
   const [isfeaturedEvent, setIsFeaturedEvent] = useState([]);
   const [internationlEvent, setInternationalEvent] = useState([]);
   const [popularConcert, setPopularConcert] = useState([]);
+  const [recommendEvent, setRecommendEvent] = useState([]);
   const [popularSport, setPopularSport] = useState([]);
   const [popularArt, setPopularArt] = useState([]);
   const [popularFamily, setPopularFamily] = useState([]);
@@ -68,6 +69,14 @@ const Home = () => {
       .catch(error => {
         console.log(error);
       });
+      axios
+      .get('http://127.0.0.1:8000/collaborativeeventviewapi/1/')
+      .then((response) => {
+        setRecommendEvent(response.data);
+      })
+      .catch((error) => {
+        console.error('Error fetching events:', error);
+      });
   }, []);
 
   return (
@@ -93,40 +102,29 @@ const Home = () => {
 
             {/* Recommended for You */}
             <section className="mt-8">
-              <h2 className="text-xl font-semibold mb-4">Recommended For You</h2>
-              <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-                {[
-                  {
-                    category: "Concerts",
-                    image: "https://m.media-amazon.com/images/I/71WJlUBG91L._AC_SL1273_.jpg",
-                  },
-                  {
-                    category: "Sports",
-                    image: "https://d1csarkz8obe9u.cloudfront.net/themedlandingpages/tlp_hero_concert-posters-cf75300061d3ed9b67842abf57ce0ef9.jpg?ts%20=%201699434317",
-                  },
-                  {
-                    category: "Arts",
-                    image: "https://marketplace.canva.com/EAFIygYzkes/1/0/1131w/canva-blue-minimalist-concert-music-cover-poster-CGNgQz4KqL0.jpg",
-                  },
-                  {
-                    category: "Family",
-                    image: "https://cdn.myportfolio.com/76ce5144-333f-4edb-9e00-1169625819f7/c1d371ba-43a7-4c4c-8291-16de1511f1f6_rw_3840.jpg?h=6951017f1504a7f845fdaf1d82fa747e",
-                  },
-                ].map((item, index) => (
-                  <div key={index} className="bg-white rounded shadow overflow-hidden">
-                    <img
-                      src={item.image}
-                      alt={item.category}
-                      className="w-full h-auto"
-                    />
-                    <div className="p-4">
-                      <h3 className="text-lg font-semibold">{item.category}</h3>
-                      <p className="text-gray-600">Event details here</p>
-                    </div>
-                  </div>
-                ))}
+      <h2 className="text-xl font-semibold mb-4">Recommended For You</h2>
+      <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+        {recommendEvent.length > 0 ? (
+          recommendEvent.map((event) => (
+            <div key={event.event_id} className="bg-white rounded shadow overflow-hidden cursor-pointer" onClick={() => navigate(`/eventdetail/${event.event_id}`)}>
+              <img
+                src={`http://127.0.0.1:8000${event.event_image}`}
+                alt={event.name}
+                className="w-full h-auto"
+              />
+              <div className="p-4">
+                <h3 className="text-lg font-semibold">{event.name}</h3>
+                <p className="text-gray-600">{event.description}</p>
+                <p className="text-sm text-gray-500">{event.city}, {event.country}</p>
+                <p className="text-sm text-gray-500">{event.date} at {event.time}</p>
               </div>
-            </section>
+            </div>
+          ))
+        ) : (
+          <p>No events available to display.</p>
+        )}
+      </div>
+    </section>
             
             {/* Popular Near You */}
             <section className="mt-8">

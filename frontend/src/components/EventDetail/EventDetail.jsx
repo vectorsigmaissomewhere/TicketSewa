@@ -11,7 +11,7 @@ const EventDetail = () => {
   const { eventId } = useParams();  // Extract eventId from the URL
   const [eventDetails, setEventDetails] = useState(null);
   const navigate = useNavigate();
-  const [suggestedEventDetails, setSuggestedEventDetails] = useState(null);
+  const [suggestedEvent, setSuggestedEvent] = useState(null);
   const [likedEvents, setLikedEvents] = useState([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
@@ -29,7 +29,7 @@ const EventDetail = () => {
   const [tickets, setTickets] = useState([]);
   const [userdetail, setUserDetail] = useState([]);
   const [storeduserdetail, setStoredUserDetail] = useState([]);
-  
+
   const [storedusername, setStoredUserName] = useState('');
   const [storeduseremail, setStoredUserEmail] = useState('');
   const [username, setUserName] = useState('');
@@ -41,22 +41,28 @@ const EventDetail = () => {
     const fetchEventDetails = async () => {
       try {
         const response = await axios.get(`http://127.0.0.1:8000/eventviewapi/${eventId}/`);
-        setEventDetails(response.data.event);
-        setSuggestedEventDetails(response.data.similar_events);
-        console.log(`This is the similar events ${response.data.similar_events}`);
-        console.log(response.data.similar_events.forEach((event, index) => {
-  console.log(`Event ${index + 1}:`, event);
-}));
-        console.log("This is the user", response.data.event.user);
+        setEventDetails(response.data);
         console.log(response.data);
-        setUserId(response.data.event.user);
-        setEventLatitude(response.data.event.latitude);
-        setEventLongitude(response.data.event.longitude);
-        console.log(response.data.event.event_image);
+        setUserId(response.data.user);
+        setEventLatitude(response.data.latitude);
+        setEventLongitude(response.data.longitude);
+        console.log(response.data.event_image);
         console.log(userid);
         setLoading(false);
       } catch (err) {
         console.error("Error fetching event details:", err);
+        setError("Failed to load event details.");
+        setLoading(false);
+      }
+    };
+    const fetchSuggestedEvents = async () => {
+      try {
+        const response = await axios.get(`http://127.0.0.1:8000/suggestedeventviewapi/${eventId}/`);
+        setSuggestedEvent(response.data);
+        console.log("Getting suggested event")
+        console.log(response.data);
+      } catch (err) {
+        console.error("Error fetching the suggested events:", err);
         setError("Failed to load event details.");
         setLoading(false);
       }
@@ -99,6 +105,7 @@ const EventDetail = () => {
     }
     fetchEventTickets();
     fetchEventDetails();
+    fetchSuggestedEvents();
     fetchTicketAddCheck();
     fetchStoredUserDetail();
   }, [eventId]);
@@ -201,7 +208,7 @@ const EventDetail = () => {
       console.error("Error liking event:", error);
     }
   };
-  
+
   const handleCheckContributor = (eventContributorId) => {
     navigate(`/profile/${eventContributorId}`);
   };
@@ -312,46 +319,37 @@ const EventDetail = () => {
       */}
       {/* Suggested contents  */}
       <div className="max-w-4xl mx-auto p-6 bg-white mt-6 rounded-lg shadow-lg">
-        <h2 className="text-xl font-semibold">Suggested Events</h2>
-        <div className="main-container">
-          {suggestedEventDetails.length === 0 ? (
-            <p>No events found</p>
-          ) : (
-            suggestedEventDetails.map((event) => (
-              <div className="main-container-first" key={suggestedEventDetails.event_id}>
-                <div className="main-container-image">
-                  <img src={suggestedEventDetails.event_image} alt="Event" />
-                </div>
-                <div className="content">
-                  <div>
-                    <div className="title">{suggestedEventDetails.name}</div>
-                    <div className="time">
-                      📅 {new Date(suggestedEventDetails.date).toDateString()} - {suggestedEventDetails.time}
-                    </div>
-                  </div>
-                  <div>
-                    <button onClick={() => handleCheckContributor(suggestedEventDetails.user)}>Check Contributor</button>
-                  </div>
-                  <div className="like">
-                    <Heart
-                      size={24}
-                      color={likedEvents.includes(suggestedEventDetails.event_id) ? "red" : "gray"}
-                      onClick={() => handleLike(suggestedEventDetails.event_id)}
-                      style={{ cursor: "pointer" }}
-                    />
-                  </div>
+        {suggestedEvent && suggestedEvent.length > 0 && (
+          <div className="max-w-4xl mx-auto mt-10 p-6 bg-white shadow-lg rounded-md">
+            <h2 className="text-2xl font-bold mb-4">Suggested Events</h2>
+            <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+              {suggestedEvent.map((event) => (
+                <div key={event.id} className="bg-gray-100 p-4 rounded-lg shadow">
+                  <img
+                    src={
+                      event.event_image?.startsWith("http")
+                        ? event.event_image
+                        : `${backendURL}${event.event_image}`
+                    }
+                    alt={event.name}
+                    className="w-full h-48 object-cover rounded-md"
+                  />
+                  <h3 className="text-xl font-semibold mt-2">{event.name}</h3>
+                  <p className="text-sm text-gray-600">📍 {event.city}, {event.country}</p>
+                  <p className="text-sm text-gray-600">📅 {new Date(event.date).toDateString()}</p>
                   <button
-                    className="event-btn"
-                    onClick={() => navigate(`/eventdetail/${suggestedEventDetails.event_id}`)}
+                    onClick={() => navigate(`/eventdetail/${event.event_id}`)}
+                    className="mt-3 bg-blue-600 hover:bg-blue-700 text-white px-4 py-2 rounded"
                   >
-                    View Event Details
+                    View Details
                   </button>
                 </div>
-              </div>
-            ))
-          )}
-        </div>
+              ))}
+            </div>
+          </div>
+        )}
       </div>
+
     </div>
   );
 };
