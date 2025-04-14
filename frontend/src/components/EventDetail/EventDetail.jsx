@@ -6,6 +6,7 @@ import { MapContainer, Marker, Popup, TileLayer } from "react-leaflet";
 import "leaflet/dist/leaflet.css";
 import { Heart } from "lucide-react";
 import { useNavigate } from "react-router-dom";
+import Rate from './Rate';
 
 const EventDetail = () => {
   const { eventId } = useParams();  // Extract eventId from the URL
@@ -29,13 +30,17 @@ const EventDetail = () => {
   const [tickets, setTickets] = useState([]);
   const [userdetail, setUserDetail] = useState([]);
   const [storeduserdetail, setStoredUserDetail] = useState([]);
-
+  const [eventcommentlist, setEventCommentList] = useState([]);
   const [storedusername, setStoredUserName] = useState('');
   const [storeduseremail, setStoredUserEmail] = useState('');
   const [username, setUserName] = useState('');
   const [location, setUserLocation] = useState('');
   const [latitude, setEventLatitude] = useState('');
   const [longitude, setEventLongitude] = useState('');
+  const [message, setMessage] = useState('');
+  const [event_comment, setEventComment] = useState('');
+  const [eventrate, setEventRate] = useState(5);
+  const [visibleComments, setVisibleComments] = useState(5);
   /*stored the response for being eligible to edit the eventdetail */
   useEffect(() => {
     const fetchEventDetails = async () => {
@@ -103,11 +108,36 @@ const EventDetail = () => {
         console.log(err);
       }
     }
+    const fetchAverageEventRate = async () => {
+      try {
+        const response = await axios.get(`http://127.0.0.1:8000/api/event/eventrateapi/${eventId}/`);
+        setEventRate(response.data);
+        console.log("This is the average event rating");
+        console.log(eventrate);
+        console.log(response.data);
+      }
+      catch (err) {
+        console.log(err);
+      }
+    }
+    const fetchEventComment = async () => {
+      try {
+        const response = await axios.get(`http://127.0.0.1:8000/api/event/eventcommentapi/${eventId}/`);
+        setEventCommentList(response.data);
+        console.log("This is the event comment list");
+        console.log(response.data);
+      }
+      catch (err) {
+        console.log(err);
+      }
+    }
     fetchEventTickets();
     fetchEventDetails();
     fetchSuggestedEvents();
     fetchTicketAddCheck();
     fetchStoredUserDetail();
+    fetchAverageEventRate();
+    fetchEventComment();
   }, [eventId]);
 
   useEffect(() => {
@@ -213,6 +243,38 @@ const EventDetail = () => {
     navigate(`/profile/${eventContributorId}`);
   };
 
+  /*submit the comment */
+  const handleCommentSubmit = async (e) => {
+    e.preventDefault();
+    if (!storedUserId) {
+      setMessage("User not authenticated");
+      return;
+    }
+    try {
+      const response = await fetch('http://127.0.0.1:8000/commentviewapi/', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+          'Authorization': `Bearer ${token}`
+        },
+        body: JSON.stringify({
+          user: storedUserId,
+          event: eventId,
+          content: event_comment,
+        })
+      });
+      const data = await response.json();
+      if (response.ok) {
+        setEventComment('');
+        setMessage("Comment Added Successfully");
+      } else {
+        setMessage(data.error || "Something went wrong");
+      }
+    } catch (error) {
+      setMessage("Failed to connect to the server");
+    }
+  }
+
 
   return (
     <div className="bg-gray-100 min-h-screen">
@@ -238,6 +300,7 @@ const EventDetail = () => {
               <button className="bg-pink-500 hover:bg-pink-600 text-white px-6 py-2 rounded-lg" onClick={() => setOpenPopup(true)}>
                 Book Now
               </button>
+
               {openPopup && (
                 <div className="fixed inset-0 flex items-center justify-center bg-black bg-opacity-50 z-20">
                   <div className="rounded-md p-6 bg-white text-black w-5/6 md:w-1/3 h-[80vh] overflow-y-auto">
@@ -245,6 +308,7 @@ const EventDetail = () => {
                       <h2 className="font-sans text-2xl font-bold">Payment</h2>
                       <button onClick={() => setOpenPopup(false)}>X</button>
                     </div>
+
                     {tickets.length === 0 ? (
                       <p>No tickets found</p>
                     ) : (
@@ -266,6 +330,17 @@ const EventDetail = () => {
                 </div>
               )}
 
+            </div>
+            {/* You can do rating */}
+            <div>
+              <div className="flex items-center mt-2">
+                {Array.from({ length: 5 }, (_, i) => (
+                  <span key={i} className={i < eventrate ? "text-yellow-500" : "text-gray-300"}>
+                    ★
+                  </span>
+                ))}
+                <span className="ml-2 text-sm text-gray-600">(Rating)</span>
+              </div>
             </div>
           </div>
         </div>
@@ -317,6 +392,61 @@ const EventDetail = () => {
         </ul>
       </div>
       */}
+      {/*Rate Now */}
+      <div className="max-w-4xl mx-auto p-6 bg-white mt-6 rounded-lg shadow-lg space-y-6">
+        <button className="bg-blue-600 text-white px-4 py-2 rounded hover:bg-blue-700 transition self-start">
+          Rate Now
+        </button>
+
+        <div className="flex justify-end items-center space-x-4">
+          <Rate eventId={eventId} userId={storedUserId} />
+        </div>
+      </div>
+      {/* Add the comment */}
+      <div className="max-w-4xl mx-auto p-6 bg-white mt-6 rounded-lg shadow-lg space-y-6">
+        <form onSubmit={handleCommentSubmit}>
+          <textarea
+            placeholder="Leave a comment..."
+            className="w-full p-4 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 resize-none"
+            rows={4}
+            value={event_comment}
+            onChange={(e) => setEventComment(e.target.value)}
+            required
+          ></textarea>
+          <div className="flex justify-end mt-2">
+            <button className="bg-blue-600 text-white px-4 py-2 rounded hover:bg-blue-700 transition"
+              type="submit">
+              Submit Comment
+            </button>
+          </div>
+        </form>
+      </div>
+
+      {/* List all the comments */}
+      <div className="max-w-4xl mx-auto p-6 bg-white mt-6 rounded-lg shadow-lg space-y-6">
+        <h2 className="text-xl font-bold mb-4">Comments</h2>
+        {eventcommentlist.length === 0 ? (
+          <p className="text-gray-600">No comments yet.</p>
+        ) : (
+          eventcommentlist.slice(0, visibleComments).map((comment, index) => (
+            <div key={index} className="mb-4 border-b pb-2">
+              <p className="text-sm font-semibold text-blue-800">{comment.user_fullname}</p>
+              <p className="text-gray-700 mt-1">{comment.comment || comment.content}</p>
+            </div>
+          ))
+        )}
+      </div>
+      <div className="max-w-4xl mx-auto p-6 mt-6">
+      {eventcommentlist.length > visibleComments && (
+        <button
+          className="mt-2 px-4 py-1 text-sm text-white bg-blue-600 rounded hover:bg-blue-700"
+          onClick={() => setVisibleComments(prev => prev + 5)}
+        >
+          Read More Comments
+        </button>
+      )}
+      </div>
+
       {/* Suggested contents  */}
       <div className="max-w-4xl mx-auto p-6 bg-white mt-6 rounded-lg shadow-lg">
         {suggestedEvent && suggestedEvent.length > 0 && (
@@ -350,7 +480,7 @@ const EventDetail = () => {
         )}
       </div>
 
-    </div>
+    </div >
   );
 };
 

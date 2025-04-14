@@ -8,4 +8,6 @@ urlpatterns = [
     path('event-list/', EventListView.as_view(), name='event-list'),
     # this end point will help me get the userid 
     path('usereventapi/<int:event_id>/', views.event_user_api, name='usereventapi'), 
+    path('eventrateapi/<int:event_id>/', views.average_rating_api, name='eventrateapi'),
+    path('eventcommentapi/<int:event_id>/', views.comment_api, name='eventcommentapi'),
 ]

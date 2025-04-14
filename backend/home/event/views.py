@@ -1,7 +1,7 @@
 from django.shortcuts import render
 from .models import Event
 from contributor.models import Contributor
-from .serializers import EventSerializer, LikeSerializer
+from .serializers import EventSerializer, LikeSerializer, CommentSerializer, RateSerializer
 from rest_framework.permissions import IsAuthenticated 
 from rest_framework.response import Response 
 from account.renderers import UserRenderer 
@@ -11,15 +11,16 @@ from rest_framework.permissions import AllowAny
 from rest_framework.views import APIView 
 from rest_framework.renderers import JSONRenderer 
 from rest_framework import viewsets 
-from .models import Like
+from .models import Like, Comment, Rate
 from rest_framework.generics import ListAPIView
 from django.db.models import Q
 from rest_framework.filters import OrderingFilter
-from payment.models import Payment 
+from payment.models import Payment
 from rest_framework.decorators import api_view 
 from .event_recommender import get_similar_events 
 from .collaborative_event_recommender import recommend_events_for_user
 from django.db.models.functions import Now
+from django.db.models import Avg
 
 # list, retrieve and create there is another viewset for deleting and updating 
 class EventModelViewSet(viewsets.ViewSet):
@@ -274,4 +275,68 @@ def event_user_api(request, event_id):
     except Event.DoesNotExist:
         return Response({'msg': "Event not found"}, status=404)
 
+# comment view 
+class CommentModelViewSet(viewsets.ViewSet):
+    permission_classes = [AllowAny]
+    def retrieve(self, request, pk=None):
+        event = get_object_or_404(Event, pk=pk)
+        comments = Comment.objects.filter(event=event).order_by('-created_at')
+        serializer = CommentSerializer(comments, many=True)
+        return Response(serializer.data)
 
+    permission_classes = [IsAuthenticated]
+    def create(self, request):
+        serializer = CommentSerializer(data=request.data, context={'request': request})
+        if serializer.is_valid():
+            serializer.save(user=request.user)
+            return Response(
+                {'msg': 'Comment created successfully', 'data': serializer.data},
+                status=status.HTTP_201_CREATED
+            )
+        return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+        
+# rating view 
+class RateModelViewSet(viewsets.ViewSet):
+    permission_classes = [IsAuthenticated]
+    def create(self, request):
+        serializer = RateSerializer(data=request.data, context={'request': request})
+        if serializer.is_valid():
+            serializer.save(user=request.user)
+            return Response(
+                {'msg': 'Rate done successfully', 'data': serializer.data},
+                status=status.HTTP_201_CREATED
+            )
+        return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+
+# get the average rating according to the event_id 
+@api_view(['GET'])
+def average_rating_api(request, event_id):
+    try:
+        event = Event.objects.get(pk=event_id)
+    except Event.DoesNotExist:
+        return Response({'msg': "Event not found"}, status=404)
+    average = Rate.objects.filter(event=event).aggregate(avg_rating=Avg('rating'))['avg_rating']
+    return Response(int(average) if average is not None else 0)
+
+# get the comments according to the event_id 
+@api_view(['GET'])
+def comment_api(request, event_id):
+    try:
+        event = Event.objects.get(pk=event_id)
+    except Event.DoesNotExist:
+        return Response({'msg': "Event not found"}, status=404)
+
+    comments = Comment.objects.filter(event=event).order_by('-created_at')
+
+    if comments.exists():
+        data = [
+            {
+                'comment': c.content,
+                'user_fullname': c.user.name,
+                'created_at': c.created_at
+            }
+            for c in comments
+        ]
+        return Response(data)
+    else:
+        return Response({'msg': "No comments found for this event"}, status=404)

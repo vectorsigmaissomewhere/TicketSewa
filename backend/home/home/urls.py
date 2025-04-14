@@ -4,7 +4,7 @@ from django.conf import settings
 from django.conf.urls.static import static
 from contributor.views import MakeContributorViewSet 
 from event import views
-from event.views import EventModelViewSet, EventContribAuthModelViewSet, LikeViewSet, LikedEventViewSet, IsFeaturedViewSet, GetInternationalEventViewSet, GetPopularConcertViewSet, GetPopularSportViewSet, GetPopularArtViewSet, GetPopularFamilyViewSet, VisitedEventViewSet, SimilarEventModelViewSet, CollaborativeEventModelViewSet
+from event.views import EventModelViewSet, EventContribAuthModelViewSet, LikeViewSet, LikedEventViewSet, CommentModelViewSet, IsFeaturedViewSet, GetInternationalEventViewSet, GetPopularConcertViewSet, GetPopularSportViewSet, GetPopularArtViewSet, GetPopularFamilyViewSet, VisitedEventViewSet, SimilarEventModelViewSet, CollaborativeEventModelViewSet, RateModelViewSet
 from rest_framework.routers import DefaultRouter
 from ticket.views import TicketViewSet, CheckTicketAddView
 from payment.views import PaymentDataSaveViewSet
@@ -16,9 +16,17 @@ add_contributor_router.register('addcontributor', MakeContributorViewSet, basena
 eventviewrouter = DefaultRouter()
 eventviewrouter.register('eventviewapi', EventModelViewSet, basename='eventviewapi')
 
+# router for adding comment 
+commentviewrouter = DefaultRouter()
+commentviewrouter.register('commentviewapi', CommentModelViewSet, basename='commentviewapi')
+
 # router for retrieving suggested event
 suggestedeventrouter = DefaultRouter()
 suggestedeventrouter.register('suggestedeventviewapi', SimilarEventModelViewSet, basename='suggestedeventviewapi')
+
+# router for rating event 
+rateeventrouter = DefaultRouter()
+rateeventrouter.register('rateeventviewapi', RateModelViewSet,  basename='rateeventviewapi')
 
 collaborativeeventrouter = DefaultRouter()
 collaborativeeventrouter.register('collaborativeeventviewapi', CollaborativeEventModelViewSet, basename='collaborativeeventviewapi')
@@ -74,7 +82,9 @@ urlpatterns = [
     path('', include(eventviewrouter.urls)),
     path('', include(suggestedeventrouter.urls)), # get suggested events 
     path('', include(collaborativeeventrouter.urls)), # get collaborative recommended events 
+    path('', include(commentviewrouter.urls)), # post the commented events 
     path('', include(featureviewrouter.urls)), # for featured posts 
+    path('', include(rateeventrouter.urls)), # for rating event 
     path('', include(internationaleventviewrouter.urls)),
     path('', include(concertpopulareventviewrouter.urls)), # for popular concert event  
     path('', include(sportpopulareventviewrouter.urls)), # for popular sport event
