@@ -10,4 +10,5 @@ urlpatterns = [
     path('usereventapi/<int:event_id>/', views.event_user_api, name='usereventapi'), 
     path('eventrateapi/<int:event_id>/', views.average_rating_api, name='eventrateapi'),
     path('eventcommentapi/<int:event_id>/', views.comment_api, name='eventcommentapi'),
+    path('recommendeventapi/<int:user_id>/', views.recommend_events, name='recommendeventapi'),
 ]

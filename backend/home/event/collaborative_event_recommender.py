@@ -4,48 +4,49 @@ from event.models import Event, Like
 from payment.models import Payment
 
 def recommend_events_for_user(user):
-    # Step 1: Get liked and paid event types
-    liked_event_types = list(Like.objects.filter(user=user).values_list('event__event_type', flat=True))
-    paid_event_types = list(Payment.objects.filter(user=user).values_list('event__event_type', flat=True))
+    likes = Like.objects.values('user_id', 'event_id')
+    purchases = Payment.objects.exclude(user_id=None).values('user_id', 'event_id')
 
-    print("Liked event types:", liked_event_types)
-    print("Paid event types:", paid_event_types)
+    interaction_data = list(likes) + list(purchases)
+    df = pd.DataFrame(interaction_data)
 
-    # Combine and count occurrences
-    event_type_counts = Counter(liked_event_types) + Counter(paid_event_types)
+    if df.empty or user_id not in df['user_id'].unique():
+        return Response({"events": []})
 
-    # Sort by most common event types
-    sorted_types = [etype for etype, _ in event_type_counts.most_common()]
-    print("Sorted event types:", sorted_types)
+    # Step 2: User-Event Matrix
+    interaction_matrix = pd.crosstab(df['user_id'], df['event_id'])
 
-    # Step 2: Get IDs of events already liked or paid
-    excluded_event_ids = set()  # No exclusions for testing
-    print("Excluded event IDs:", excluded_event_ids)
+    # Step 3: Similarity between users
+    similarity = cosine_similarity(interaction_matrix)
+    sim_df = pd.DataFrame(similarity, index=interaction_matrix.index, columns=interaction_matrix.index)
 
-    # Step 3: Recommend events based on preferred event types
-    recommended_events = []
+    if user_id not in sim_df.index:
+        return Response({"events": []})
 
-    for etype in sorted_types:
-        events = Event.objects.filter(
-            event_type=etype
-        ).exclude(
-            event_id__in=excluded_event_ids
-        ).order_by('-is_popular', '-is_featured')[:10]
+    # Step 4: Find most similar users
+    similar_users = sim_df[user_id].sort_values(ascending=False).drop(user_id).head(3).index.tolist()
 
-        print(f"Found {len(events)} events for type '{etype}'")
-        recommended_events.extend(events)
+    # Events interacted by similar users
+    similar_user_events = df[df['user_id'].isin(similar_users)]['event_id'].value_counts().index.tolist()
 
-        if len(recommended_events) >= 10:
-            break
+    # Events already interacted by target user
+    user_events = df[df['user_id'] == user_id]['event_id'].tolist()
 
-    # Step 4: Fallback if no recommendations found
-    if not recommended_events:
-        print("No personalized events found. Returning fallback events.")
-        fallback_events = Event.objects.filter(
-            ticket_active=True,
-            date__gte=timezone.now()
-        ).order_by('-is_popular', '-is_featured')[:10]
-        print(f"Fallback events: {fallback_events}")
-        return fallback_events
+    # Recommend events not already interacted with
+    recommended_event_ids = [eid for eid in similar_user_events if eid not in user_events][:4]
 
-    return recommended_events[:4]
+    # Get event details
+    recommended_events = Event.objects.filter(event_id__in=recommended_event_ids)
+
+    results = []
+    for event in recommended_events:
+        results.append({
+            "event_id": event.event_id,
+            "name": event.name,
+            "description": event.description,
+            "city": event.city,
+            "date": event.date,
+            "image": event.event_image,
+        })
+
+    return Response({"events": results})

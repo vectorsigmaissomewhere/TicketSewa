@@ -1,5 +1,9 @@
 from django.shortcuts import render
-from .models import Event
+from .models import Event, Like 
+from payment.models import Payment 
+from account.models import User 
+from sklearn.metrics.pairwise import cosine_similarity
+import pandas as pd
 from contributor.models import Contributor
 from .serializers import EventSerializer, LikeSerializer, CommentSerializer, RateSerializer
 from rest_framework.permissions import IsAuthenticated 
@@ -91,6 +95,41 @@ class CollaborativeEventModelViewSet(viewsets.ViewSet):
             return Response(serialized.data)
         except Exception as e:
             return Response({"error": str(e)}, status=500)
+
+# we are not using collaborative_event_recommender.py but doing all of it in this function
+@api_view(['GET'])
+def recommend_events(request, user_id):
+    likes = Like.objects.values('user_id', 'event_id')
+    purchases = Payment.objects.exclude(user_id=None).values('user_id', 'event_id')
+    interaction_data = list(likes) + list(purchases)
+    df = pd.DataFrame(interaction_data)
+    if df.empty or user_id not in df['user_id'].unique():
+        return Response({"events": []})
+    interaction_matrix = pd.crosstab(df['user_id'], df['event_id'])
+    similarity = cosine_similarity(interaction_matrix)
+    sim_df = pd.DataFrame(similarity, index=interaction_matrix.index, columns=interaction_matrix.index)
+    if user_id not in sim_df.index:
+        return Response({"events": []})
+    similar_users = sim_df[user_id].sort_values(ascending=False).drop(user_id).head(3).index.tolist()
+    similar_user_events = df[df['user_id'].isin(similar_users)]['event_id'].value_counts().index.tolist()
+    user_events = df[df['user_id'] == user_id]['event_id'].tolist()
+    recommended_event_ids = [eid for eid in similar_user_events if eid not in user_events][:4]
+    recommended_events = Event.objects.filter(event_id__in=recommended_event_ids)
+
+    results = []
+    for event in recommended_events:
+        results.append({
+            "event_id": event.event_id,
+            "name": event.name,
+            "description": event.description,
+            "city": event.city,
+            "date": event.date,
+            "time": event.time,
+            "image": event.event_image.url if event.event_image else None,
+        })
+
+    return Response({"events": results})
+
 """
 def recommended_events_view(request):
     user = request.user

@@ -3,6 +3,7 @@ import Navbar from '../Home/Navbar'
 import Footer from '../Home/Footer'
 import { useNavigate } from 'react-router-dom'
 import axios from "axios"
+import { decodeToken } from '../../Utils/authtoken';
 
 const Home = () => {
   const navigate = useNavigate();
@@ -17,9 +18,12 @@ const Home = () => {
   const [popularSport, setPopularSport] = useState([]);
   const [popularArt, setPopularArt] = useState([]);
   const [popularFamily, setPopularFamily] = useState([]);
+  const token = localStorage.getItem('authToken');
+  const decodedToken = decodeToken(token);
+  const userId = decodedToken?.user_id || null;
   const handleCategoryClick = (category) => {
-    navigate(`/event?category=${category}`);;
-  };2
+    navigate(`/event?category=${category}`);
+  };
   useEffect(() => {
     axios.get('http://127.0.0.1:8000/featureviewapi/')
       .then(response => {
@@ -69,10 +73,12 @@ const Home = () => {
       .catch(error => {
         console.log(error);
       });
-      axios
-      .get('http://127.0.0.1:8000/collaborativeeventviewapi/1/')
+    axios
+      .get(`http://127.0.0.1:8000/api/event/recommendeventapi/${userId}/`)
       .then((response) => {
-        setRecommendEvent(response.data);
+        console.log("Recommended Events");
+        console.log(response.data);
+        setRecommendEvent(response.data.events);
       })
       .catch((error) => {
         console.error('Error fetching events:', error);
@@ -102,30 +108,29 @@ const Home = () => {
 
             {/* Recommended for You */}
             <section className="mt-8">
-      <h2 className="text-xl font-semibold mb-4">Recommended For You</h2>
-      <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-        {recommendEvent.length > 0 ? (
-          recommendEvent.map((event) => (
-            <div key={event.event_id} className="bg-white rounded shadow overflow-hidden cursor-pointer" onClick={() => navigate(`/eventdetail/${event.event_id}`)}>
-              <img
-                src={`http://127.0.0.1:8000${event.event_image}`}
-                alt={event.name}
-                className="w-full h-auto"
-              />
-              <div className="p-4">
-                <h3 className="text-lg font-semibold">{event.name}</h3>
-                <p className="text-gray-600">{event.description}</p>
-                <p className="text-sm text-gray-500">{event.city}, {event.country}</p>
-                <p className="text-sm text-gray-500">{event.date} at {event.time}</p>
+              <h2 className="text-xl font-semibold mb-4">Recommended For You</h2>
+              <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                {recommendEvent.length > 0 ? (
+                  recommendEvent.map((event) => (
+                    <div key={event.event_id} className="bg-white rounded shadow overflow-hidden cursor-pointer" onClick={() => navigate(`/eventdetail/${event.event_id}`)}>
+                      <img src={`http://127.0.0.1:8000${event.image}`}
+                        alt={event.name}
+                        className="w-full h-auto"
+                      />
+                      <div className="p-4">
+                        <h3 className="text-lg font-semibold">{event.name}</h3>
+                        <p className="text-gray-600">{event.description}</p>
+                        <p className="text-sm text-gray-500">{event.city}, {event.country}</p>
+                        <p className="text-sm text-gray-500">{event.date} at {event.time}</p>
+                      </div>
+                    </div>
+                  ))
+                ) : (
+                  <p>No events available to display.</p>
+                )}
               </div>
-            </div>
-          ))
-        ) : (
-          <p>No events available to display.</p>
-        )}
-      </div>
-    </section>
-            
+            </section>
+
             {/* Popular Near You */}
             <section className="mt-8">
               <h2 className="text-xl font-semibold mb-4">Popular Near You</h2>
