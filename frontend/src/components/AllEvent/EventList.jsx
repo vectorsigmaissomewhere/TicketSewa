@@ -11,6 +11,9 @@ const EventList = () => {
   const category = queryParams.get("category");
   const [events, setEvents] = useState([]);
   const [likedEvents, setLikedEvents] = useState([]);
+  const [nextPage, setNextPage] = useState(null);
+  const [prevPage, setPrevPage] = useState(null);
+  const [currentUrl, setCurrentUrl] = useState("");
   const [filters, setFilters] = useState({
     event_type: "",
     country: "",
@@ -32,32 +35,36 @@ const EventList = () => {
   useEffect(() => {
     fetchEvents();
     navigate("/event");
-  }, [filters]); // Fetch events whenever filters change
+  }, [filters]);
 
-  const fetchEvents = () => {
+  const fetchEvents = (customUrl = null) => {
     const queryParams = new URLSearchParams();
+
     Object.keys(filters).forEach((key) => {
       if (filters[key]) {
         queryParams.append(key, filters[key]);
       }
     });
+
     if (category) {
       queryParams.append("event_type", category);
     }
 
-    const apiUrl = `http://127.0.0.1:8000/api/event/event-list/?${queryParams}`;
-    console.log("Fetching events from:", apiUrl); // Debugging log
+    const baseUrl = "http://127.0.0.1:8000/api/event/event-list/";
+    const apiUrl = customUrl || `${baseUrl}?${queryParams}`;
+
+    setCurrentUrl(apiUrl);
 
     axios
       .get(apiUrl)
       .then((response) => {
-        console.log("These are the fetched data", response.data)
-        setEvents(response.data);
+        setEvents(response.data.results);
+        setNextPage(response.data.next);
+        setPrevPage(response.data.previous);
       })
       .catch((error) => {
         console.error(error);
       });
-
   };
 
   const handleFilterChange = (e) => {
@@ -70,7 +77,6 @@ const EventList = () => {
 
   const handleApplyFilters = (e) => {
     e.preventDefault();
-    console.log("Filters applied:", filters); // Debugging log
     fetchEvents();
   };
 
@@ -94,6 +100,18 @@ const EventList = () => {
 
   const handleCheckContributor = (eventContributorId) => {
     navigate(`/profile/${eventContributorId}`);
+  };
+
+  const handleNext = () => {
+    if (nextPage) {
+      fetchEvents(nextPage);
+    }
+  };
+
+  const handlePrevious = () => {
+    if (prevPage) {
+      fetchEvents(prevPage);
+    }
   };
 
   return (
@@ -149,6 +167,7 @@ const EventList = () => {
           </button>
         </form>
       </div>
+
       {/* EVENT LIST SECTION */}
       <div className="main-container-eventlist-event">
         <div className="heading-name">All Events</div>
@@ -190,6 +209,32 @@ const EventList = () => {
             ))
           )}
         </div>
+
+        <div
+          className="pagination-buttons flex justify-end mt-6 pr-4 gap-4"
+        >
+          <button
+            onClick={handlePrevious}
+            disabled={!prevPage}
+            className={`transition duration-300 ease-in-out transform hover:scale-105 hover:shadow-lg px-4 py-2 rounded-full font-semibold text-white ${prevPage
+                ? "bg-gradient-to-r from-purple-500 to-pink-500 hover:from-purple-600 hover:to-pink-600"
+                : "bg-gray-400 cursor-not-allowed"
+              }`}
+          >
+            ← Previous
+          </button>
+          <button
+            onClick={handleNext}
+            disabled={!nextPage}
+            className={`transition duration-300 ease-in-out transform hover:scale-105 hover:shadow-lg px-4 py-2 rounded-full font-semibold text-white ${nextPage
+                ? "bg-gradient-to-r from-green-400 to-blue-500 hover:from-green-500 hover:to-blue-600"
+                : "bg-gray-400 cursor-not-allowed"
+              }`}
+          >
+            Next →
+          </button>
+        </div>
+
       </div>
     </div>
   );

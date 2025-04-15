@@ -25,6 +25,7 @@ from .event_recommender import get_similar_events
 from .collaborative_event_recommender import recommend_events_for_user
 from django.db.models.functions import Now
 from django.db.models import Avg
+from rest_framework.pagination import CursorPagination
 
 # list, retrieve and create there is another viewset for deleting and updating 
 class EventModelViewSet(viewsets.ViewSet):
@@ -225,9 +226,16 @@ class VisitedEventViewSet(viewsets.ReadOnlyModelViewSet):
         serializer = self.serializer_class(queryset, many=True)
         return Response(serializer.data)
 
+# pagination 
+class MyCursorPagination(CursorPagination):
+    page_size = 2
+    ordering = 'event_id'
+    cursor_query_param = 'event'
+
 # adding filter in Events 
 class EventListView(ListAPIView):
     serializer_class = EventSerializer
+    pagination_class = MyCursorPagination
     queryset = Event.objects.all()
     filter_backends = [OrderingFilter]
     permission_classes = [AllowAny]  # Allow anyone to view events (adjust as needed)

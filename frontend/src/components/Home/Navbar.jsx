@@ -27,7 +27,7 @@ const Navbar = () => {
     navigate('/');
   }
   const handleCategoryClick = (category) => {
-    navigate(`/event?category=${category}`);;
+    navigate(`/event?category=${category}`);
   };
 
   return (
