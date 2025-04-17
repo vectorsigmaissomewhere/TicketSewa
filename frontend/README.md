@@ -13,3 +13,11 @@ it should navigate to profile
 props => user_id 
 now the condition will get checked  
 ```
+
+```text
+dashboard 
+add ticket
+update event 
+Ticket
+statistics 
+```

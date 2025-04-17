@@ -142,6 +142,11 @@ const Event = () => {
                     onClick={()=> navigate(`/profile/updateevent/${event.event_id}`)}
                     >
                     Update</button>
+                    <button 
+                    className="update-btn"
+                    onClick={()=> navigate(`/admineventview/${event.event_id}`)}
+                    >
+                    Event info</button>
                   </div>
                   )}
                   <button className="event-btn" onClick={() => navigate(`/eventdetail/${event.event_id}`)}>View Event Details</button>

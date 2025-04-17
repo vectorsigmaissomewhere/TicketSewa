@@ -105,6 +105,10 @@ body {
   align-items: center;
 }
 
+.update{
+  display: flex;
+  justify-content: space-between;
+}
 // Buttons
 .update-btn {
   background: orange;

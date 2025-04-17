@@ -14,6 +14,7 @@ import UpdateEvent from './components/Profile/UpdateEvent';
 import PaymentSuccess from './components/EventDetail/PaymentSuccess';
 import PaymentSuccessResult from './components/EventDetail/PaymentSuccessResult';
 import Rate from './components/EventDetail/Rate';
+import AdminView from './components/AdminView/AdminView';
 
 const App = () => {
   return (
@@ -34,6 +35,7 @@ const App = () => {
         <Route path="/payment-success" element={<PaymentSuccess />} />
         <Route path="/payment-result" element={<PaymentSuccessResult/>} />
         <Route path="/rate" element={<Rate/>} />
+        <Route path="/admineventview/:eventId" element={<AdminView />} />
       </Routes>
     </Router>
   );
