@@ -8,6 +8,8 @@ from django.shortcuts import get_object_or_404
 from account.models import User
 from rest_framework import status
 from rest_framework import viewsets
+from .models import Payment 
+from rest_framework.pagination import CursorPagination
 
 KHALTI_API_URL = "https://dev.khalti.com/api/v2/epayment/initiate/"
 KHALTI_SECRET_KEY = "470361cd4cd147498123c353d461bd53"
@@ -125,3 +127,45 @@ class PaymentDataSaveViewSet(viewsets.ViewSet):
         return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
 
 # store the transaction credential where the user will make the payment in 
+
+# pagination in paymentlist 
+class MyCursorPagination(CursorPagination):
+    page_size = 20
+    ordering = 'payment_id'
+    cursor_query_param = 'transaction'
+
+# list all the payment according to the event_id 
+class PaymentListViewSet(viewsets.ViewSet):
+    pagination_class = MyCursorPagination
+
+    def retrieve(self, request, pk=None):
+        if pk is None:
+            return Response({'msg': 'Event ID not provided'}, status=status.HTTP_400_BAD_REQUEST)
+
+        payments = Payment.objects.filter(event_id=pk).order_by('event_id')
+        paginator = self.pagination_class()
+        page = paginator.paginate_queryset(payments, request)
+
+        if page is not None:
+            serializer = PaymentSerializer(page, many=True)
+            return paginator.get_paginated_response(serializer.data)
+
+        return Response({'msg': 'No payments found for this event'}, status=status.HTTP_404_NOT_FOUND)
+
+
+# check if the code and email exists 
+@api_view(['POST'])
+def change_payment_status(request):
+    email = request.data.get('email')
+    code = request.data.get('code')
+
+    try:
+        payment = Payment.objects.get(email=email, code=code)
+        if payment.status == True: 
+            payment.status = False 
+        else:
+            payment.status = True 
+        payment.save()
+        return Response({'message': 'Payment status changed.'}, status=status.HTTP_200_OK)
+    except Payment.DoesNotExist:
+        return Response({'error': 'Invalid email or code.'}, status=status.HTTP_404_NOT_FOUND)

@@ -11,4 +11,6 @@ urlpatterns = [
     path('eventrateapi/<int:event_id>/', views.average_rating_api, name='eventrateapi'),
     path('eventcommentapi/<int:event_id>/', views.comment_api, name='eventcommentapi'),
     path('recommendeventapi/<int:user_id>/', views.recommend_events, name='recommendeventapi'),
+    # this endpoint will help me get the data in dashboard
+    path('dashboarddataapi/<int:event_id>/', views.dashboard_data, name='dashboarddatapi'), 
 ]

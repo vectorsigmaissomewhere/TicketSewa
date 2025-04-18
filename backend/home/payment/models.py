@@ -4,6 +4,7 @@ from account.models import User
 from event.models import Event
 from ticket.models import Ticket
 from django.contrib.auth import get_user_model
+import random 
 
 class Payment(models.Model):
     payment_id = models.BigAutoField(primary_key=True)
@@ -18,7 +19,20 @@ class Payment(models.Model):
     email = models.EmailField(verbose_name="Email", max_length=255)
     name = models.CharField(max_length=200)
     ticket_type = models.CharField(max_length=255)
+    status = models.BooleanField(default=False)
+    code = models.CharField(max_length=4, blank=True, editable=False, unique=True)
     created_at = models.DateTimeField(auto_now_add=True)
+
+    def save(self, *args, **kwargs):
+        if not self.code:
+            self.code = self.generate_unique_code()
+        super().save(*args, **kwargs)
+
+    def generate_unique_code(self):
+        while True:
+            code = str(random.randint(1000, 9999))
+            if not Payment.objects.filter(code=code).exists():
+                return code
 
     def __str__(self):
         return f"{self.user} bought {self.ticket_type} for {self.amount}"

@@ -26,6 +26,12 @@ from .collaborative_event_recommender import recommend_events_for_user
 from django.db.models.functions import Now
 from django.db.models import Avg
 from rest_framework.pagination import CursorPagination
+from django.db.models.functions import TruncDate
+from account.models import User 
+from event.models import Event, Comment 
+from django.db.models import Sum, Count
+from django.utils.timezone import now
+from datetime import timedelta
 
 # list, retrieve and create there is another viewset for deleting and updating 
 class EventModelViewSet(viewsets.ViewSet):
@@ -387,3 +393,62 @@ def comment_api(request, event_id):
         return Response(data)
     else:
         return Response({'msg': "No comments found for this event"}, status=404)
+
+# get the dashboard data 
+@api_view(['GET'])
+def dashboard_data(request, event_id):
+    try:
+        event = Event.objects.get(event_id=event_id)
+    except Event.DoesNotExist:
+        return Response({"error": "Event not found"}, status=404)
+
+    # Total ticket sold
+    total_tickets_sold = Payment.objects.filter(event=event).count()
+
+    # Total revenue
+    total_revenue = Payment.objects.filter(event=event).aggregate(total=Sum('amount'))['total'] or 0
+
+    # Sales made today
+    today = now().date()
+    sales_today = Payment.objects.filter(event=event, created_at__date=today).aggregate(today_sales=Sum('amount'))['today_sales'] or 0
+
+    # Sales over time (last 7 days)
+    sales_over_time_qs = (
+        Payment.objects
+        .filter(event=event)
+        .annotate(date=TruncDate('created_at'))
+        .values('date')
+        .annotate(total=Sum('amount'))
+        .order_by('date')
+    )
+    sales_over_time = [{"date": entry["date"], "total": entry["total"]} for entry in sales_over_time_qs]
+
+    # Recent 5 ticket buyers
+    recent_buyers_qs = (
+        Payment.objects
+        .filter(event=event)
+        .select_related('user')
+        .order_by('-created_at')[:5]
+    )
+    recent_buyers = [{"name": p.user.name, "email": p.user.email, "date": p.created_at} for p in recent_buyers_qs]
+
+    # Recent 5 comments
+    recent_comments_qs = (
+        Comment.objects
+        .filter(event=event)
+        .select_related('user')
+        .order_by('-created_at')[:5]
+    )
+    recent_comments = [{"user": c.user.name, "comment": c.content, "date": c.created_at} for c in recent_comments_qs]
+
+    data = {
+        "event_name": event.name,
+        "total_tickets_sold": total_tickets_sold,
+        "total_revenue": total_revenue,
+        "sales_today": sales_today,
+        "sales_over_time": sales_over_time,
+        "recent_buyers": recent_buyers,
+        "recent_comments": recent_comments
+    }
+
+    return Response(data)

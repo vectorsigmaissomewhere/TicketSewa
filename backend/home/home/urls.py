@@ -7,7 +7,7 @@ from event import views
 from event.views import EventModelViewSet, EventContribAuthModelViewSet, LikeViewSet, LikedEventViewSet, CommentModelViewSet, IsFeaturedViewSet, GetInternationalEventViewSet, GetPopularConcertViewSet, GetPopularSportViewSet, GetPopularArtViewSet, GetPopularFamilyViewSet, VisitedEventViewSet, SimilarEventModelViewSet, CollaborativeEventModelViewSet, RateModelViewSet
 from rest_framework.routers import DefaultRouter
 from ticket.views import TicketViewSet, CheckTicketAddView
-from payment.views import PaymentDataSaveViewSet
+from payment.views import PaymentDataSaveViewSet, PaymentListViewSet
 
 add_contributor_router = DefaultRouter()
 add_contributor_router.register('addcontributor', MakeContributorViewSet, basename='addcontributor')
@@ -30,6 +30,10 @@ rateeventrouter.register('rateeventviewapi', RateModelViewSet,  basename='rateev
 
 collaborativeeventrouter = DefaultRouter()
 collaborativeeventrouter.register('collaborativeeventviewapi', CollaborativeEventModelViewSet, basename='collaborativeeventviewapi')
+
+# transaction showing view 
+paymenteventrouter = DefaultRouter()
+paymenteventrouter.register('paymenteventviewapi', PaymentListViewSet, basename='paymenteventviewapi')
 
 # Map the GET method to the 'list' action of EventContribAuthModelViewSet
 event_user_view = EventContribAuthModelViewSet.as_view({'get': 'list'})
@@ -90,11 +94,13 @@ urlpatterns = [
     path('', include(sportpopulareventviewrouter.urls)), # for popular sport event
     path('', include(artpopulareventviewrouter.urls)),# for popular art event
     path('', include(familypopularviewrouter.urls)),# for popular family  
-    path('', include(paymentsaveviewrouter.urls)), # for saving payment save router 
+    path('', include(paymentsaveviewrouter.urls)), # for saving payment save router
+    path('', include(paymenteventrouter.urls)),# show all the transactions 
     path('events/user/<int:user_id>/', event_user_view, name='event-user-list'), # get the event according to the user id 
     path('addcontributor/', MakeContributorViewSet.as_view({'post': 'create'}), name='add-contributor'),
     path('api/contributor/', include('contributor.urls')),
     path('api/event/', include('event.urls')),
+    path('api/payment/', include('payment.urls')),
     path('', include(likerouter.urls)),   # url for like 
     path('liked-events/<int:user_id>/', LikedEventViewSet.as_view({'get': 'list'}), name='liked-events'), # get all the event that a user has liked 
     path('visited-events/<int:user_id>/', VisitedEventViewSet.as_view({'get':'list'}), name='visited-events'), # get all the event that a user has visited 
