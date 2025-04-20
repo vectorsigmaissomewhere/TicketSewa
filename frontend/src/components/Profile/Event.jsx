@@ -137,11 +137,12 @@ const Event = () => {
                   )}
                   {!eventContributorId && (
                   <div className="update">
+                    {/*
                   <button 
                     className="update-btn"
                     onClick={()=> navigate(`/profile/updateevent/${event.event_id}`)}
                     >
-                    Update</button>
+                    Update</button>*/}
                     <button 
                     className="update-btn"
                     onClick={()=> navigate(`/admineventview/${event.event_id}`)}

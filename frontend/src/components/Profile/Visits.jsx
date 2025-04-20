@@ -130,6 +130,7 @@ const Visits = () => {
               />
             </div>
           )}
+          {/*
           {!eventContributorId && (
             <div className="update">
               <button 
@@ -140,6 +141,7 @@ const Visits = () => {
               </button>
             </div>
           )}
+            */}
           <button 
             className="event-btn" 
             onClick={() => navigate(`/eventdetail/${event.event_id}`)}

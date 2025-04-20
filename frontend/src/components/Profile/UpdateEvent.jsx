@@ -28,7 +28,7 @@ const UpdateEvent = () => {
         max_tickets: "",
         is_featured: false
     });
-
+    
     const handleTicketSubmit = async (e) => {
         e.preventDefault();
         if (!storedUserId) {

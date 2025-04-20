@@ -90,12 +90,8 @@ const Home = () => {
       <Navbar />
       <div className="bg-gray-100 min-h-screen p-4">
         {/* Flex Container for Main Content */}
-        <div className="flex flex-col lg:flex-row">
-          {/* Left Content (Hero, Recommended, Popular Near You) */}
-          <div className="flex-1">
-            {/* Hero Section */}
-            <div
-              className="relative w-full h-64 bg-cover bg-center"
+        <div
+              className="relative w-full h-80 bg-cover bg-center"
               style={{ backgroundImage: `url('https://images.unsplash.com/photo-1459749411175-04bf5292ceea?q=80&w=2070&auto=format&fit=crop&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D')` }}
             >
               <div className="absolute inset-0 bg-black bg-opacity-50 flex items-center justify-center">
@@ -105,6 +101,10 @@ const Home = () => {
                 </div>
               </div>
             </div>
+        <div className="flex flex-col lg:flex-row">
+          {/* Left Content (Hero, Recommended, Popular Near You) */}
+          <div className="flex-1">
+            {/* Hero Section */}
 
             {/* Recommended for You */}
             <section className="mt-8">

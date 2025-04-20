@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from 'react';
 import axios from 'axios';
 import { Link } from 'react-router-dom';
-import { useParams } from 'react-router-dom';
+import { useParams, useNavigate } from 'react-router-dom';
 import { decodeToken } from '../../Utils/authtoken';
 
 const Profileheading = () => {
@@ -61,24 +61,29 @@ const Profileheading = () => {
         });
     }, [eventContributorId]);
   }
+  // logout code 
+  const navigate = useNavigate();
+  const logout_event = (e) =>{
+    localStorage.removeItem('authToken')
+    navigate('/');
+  }
 
   return (
     <>
       <div className="flex flex-col bg-[#ebeef2]">
+        {/*
         <div
           className="h-[20vh] bg-cover bg-center relative"
           style={{ backgroundImage: `url(${defaultBg})` }}
         >
-          {/* Profile Image Container */}
+
           <div className="ml-5 absolute z-10 flex flex-col items-center">
-            {/* Profile Picture */}
             <img
               className="rounded-full w-[140px] h-[100px] border-2 border-white"
               src="https://static.vecteezy.com/system/resources/thumbnails/033/889/256/small/sunset-on-the-sea-shore-generated-by-ai-photo.jpg"
               alt="Profile"
             />
 
-            {/* Hidden File Input */}
             <input
               type="file"
               id="file-upload"
@@ -87,7 +92,6 @@ const Profileheading = () => {
               onChange={handleFileChange}
             />
 
-            {/* Edit Button */}
             <label htmlFor="file-upload" className="cursor-pointer absolute top-[65px] left-[100px]">
               <img
                 className="w-[25px] h-[20px]"
@@ -97,7 +101,7 @@ const Profileheading = () => {
             </label>
           </div>
         </div>
-
+        /*}
         {/* Lower Container */}
         <div className="flex justify-between items-center p-1 border border-gray-300 bg-[#ebeef2]">
           {/* Left Section */}
@@ -170,7 +174,7 @@ const Profileheading = () => {
                 Settings
               </button>
             </Link>
-            <button className="w-[140px] h-[20px] font-sans bg-white border-0 rounded-md cursor-pointer">
+            <button className="w-[140px] h-[20px] font-sans bg-white border-0 rounded-md cursor-pointer" onClick={logout_event}>
               Logout
             </button>
           </div>

@@ -2,7 +2,7 @@ import React, { useState, useEffect } from 'react';
 import '../../styles/events.scss';
 import { decodeToken } from '../../Utils/authtoken';
 import axios from 'axios';
-import { useParams } from 'react-router-dom';
+import { useParams, useNavigate } from 'react-router-dom';
 import { Heart } from "lucide-react";
 
 const Liked = () => {
@@ -11,6 +11,7 @@ const Liked = () => {
   const { eventContributorId } = useParams();
   const [eventList, setEventList] = useState([]); 
   const [likedEvents, setLikedEvents] = useState([]);
+  const navigate = useNavigate();
 
   const idToUse = eventContributorId || userId; 
   useEffect(() => {
@@ -74,7 +75,7 @@ const Liked = () => {
                 />
               </div>
             )}
-            <button className="event-btn">View Event Details</button>
+            <button className="event-btn"  onClick={() => navigate(`/eventdetail/${event.event_id}`)}>View Event Details</button>
           </div>
         </div>        
         ))}

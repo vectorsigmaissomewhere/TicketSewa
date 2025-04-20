@@ -234,7 +234,7 @@ class VisitedEventViewSet(viewsets.ReadOnlyModelViewSet):
 
 # pagination 
 class MyCursorPagination(CursorPagination):
-    page_size = 2
+    page_size = 16
     ordering = 'event_id'
     cursor_query_param = 'event'
 

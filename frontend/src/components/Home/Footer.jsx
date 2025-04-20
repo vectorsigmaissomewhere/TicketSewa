@@ -1,6 +1,8 @@
 import React from 'react'
+import { useNavigate } from 'react-router-dom'
 
 const Footer = () => {
+  const navigate = useNavigate();
   return (
     <>
     <footer className="mt-8 bg-gray-800 text-white p-6">
@@ -26,15 +28,17 @@ const Footer = () => {
             <h4 className="text-lg font-bold">Help</h4>
             <ul className="mt-2 space-y-2">
               <li>
-                <a href="#" className="hover:underline">
+                <a href="#" className="hover:underline" onClick={() => navigate("/faq")}>
                   FAQ
                 </a>
               </li>
+              {/*
               <li>
                 <a href="#" className="hover:underline">
                   Queries
                 </a>
               </li>
+              */}
             </ul>
           </div>
           {/* Footer Rights */}

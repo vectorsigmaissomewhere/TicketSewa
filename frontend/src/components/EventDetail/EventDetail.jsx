@@ -7,6 +7,9 @@ import "leaflet/dist/leaflet.css";
 import { Heart } from "lucide-react";
 import { useNavigate } from "react-router-dom";
 import Rate from './Rate';
+import Footer from '../Home/Footer'
+import Profileheading from '../Profile/Profileheading'
+import Navbar from "../Home/Navbar";
 
 const EventDetail = () => {
   const { eventId } = useParams();  // Extract eventId from the URL
@@ -277,6 +280,8 @@ const EventDetail = () => {
 
 
   return (
+    <>
+    <Navbar/>
     <div className="bg-gray-100 min-h-screen">
       {/* Event Header */}
       <div className="relative bg-blue-900 text-white p-6">
@@ -481,6 +486,8 @@ const EventDetail = () => {
       </div>
 
     </div >
+    <Footer/>
+    </>
   );
 };
 

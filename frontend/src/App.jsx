@@ -16,6 +16,7 @@ import PaymentSuccessResult from './components/EventDetail/PaymentSuccessResult'
 import Rate from './components/EventDetail/Rate';
 import AdminView from './components/AdminView/AdminView';
 import ChangeStatusComponent from './components/AdminView/ChangeStatusComponent';
+import Faq from './components/Home/Faq';
 
 const App = () => {
   return (
@@ -38,6 +39,7 @@ const App = () => {
         <Route path="/rate" element={<Rate/>} />
         <Route path="/admineventview/:eventId" element={<AdminView />} />
         <Route path="/changestatus/:email" element={<ChangeStatusComponent/>}/>
+        <Route path="/faq" element={<Faq/>}/>
       </Routes>
     </Router>
   );

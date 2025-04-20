@@ -170,7 +170,7 @@ const EventList = () => {
 
       {/* EVENT LIST SECTION */}
       <div className="main-container-eventlist-event">
-        <div className="heading-name">All Events</div>
+        {/*<div className="heading-name">All Events</div>*/}
         <div className="main-container">
           {events.length === 0 ? (
             <p>No events found</p>

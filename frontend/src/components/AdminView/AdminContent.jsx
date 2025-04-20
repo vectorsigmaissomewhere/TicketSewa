@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from 'react';
-import { useParams,useNavigate } from "react-router-dom";
+import { useParams, useNavigate } from "react-router-dom";
 import axios from "axios";
 import { decodeToken } from '../../Utils/authtoken';
 import {
@@ -117,7 +117,7 @@ const AdminContent = () => {
         }
     };
 
-    
+
     useEffect(() => {
         if (!storedUserId) return;
 
@@ -229,8 +229,8 @@ const AdminContent = () => {
             <aside id="default-sidebar" class="fixed top-0 left-0 z-40 w-64 h-screen transition-transform -translate-x-full sm:translate-x-0" aria-label="Sidebar">
                 <div class="h-full px-3 py-4 overflow-y-auto bg-gray-50 dark:bg-gray-800">
                     <ul class="space-y-2 font-medium">
-                        <li className="p-2">
-                            <span className="font-bold text-gray-900 dark:text-white cursor-default select-none">
+                        <li className="p-2 cursor-pointer" onClick={() => navigate("/")}>
+                            <span className="font-bold text-gray-900 dark:text-white select-none">
                                 TicketSewa
                             </span>
                         </li>
@@ -286,7 +286,7 @@ const AdminContent = () => {
             {activeTab == 1 && (
                 <div class="p-4 sm:ml-64">
                     <div class="p-4">
-                        <h1 class="text-2xl font-semibold mb-4">TicketSewa Dashboard</h1>
+                        <h1 class="text-2xl font-semibold mb-4">Contributor Dashboard</h1>
                         <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4 mb-6">
                             <div class="bg-white dark:bg-gray-800 shadow rounded-lg p-4 flex flex-col justify-between">
                                 <p class="text-sm font-medium text-gray-500 dark:text-gray-400">EventName</p>
@@ -470,7 +470,7 @@ const AdminContent = () => {
                         <table className="w-full text-sm text-left rtl:text-right text-gray-500 dark:text-gray-400">
                             <thead className="text-xs text-gray-700 uppercase bg-gray-50 dark:bg-gray-700 dark:text-gray-400">
                                 <tr>
-                                    <th scope="col" className="px-6 py-3">#</th>
+                                    <th scope="col" className="px-6 py-3">S.N</th>
                                     <th scope="col" className="px-6 py-3">Name</th>
                                     <th scope="col" className="px-6 py-3">Email</th>
                                     <th scope="col" className="px-6 py-3">Amount</th>
@@ -505,10 +505,10 @@ const AdminContent = () => {
                                         </td>
                                         */}
                                         <td className="px-6 py-4">
-  <button onClick={() => handleStatusChange(payment.email)} className="text-black">
-    Change Status to {payment.status === 1 ? "IN" : "OUT"}
-  </button>
-</td>
+                                            <button onClick={() => handleStatusChange(payment.email)} className="text-black">
+                                                Change Status to {payment.status === 1 ? "IN" : "OUT"}
+                                            </button>
+                                        </td>
                                     </tr>
                                 ))}
                             </tbody>

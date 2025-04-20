@@ -3,9 +3,12 @@ import { Calendar, MapPin, Heart} from "lucide-react";
 import Event from '../Profile/Event'
 import Visits from '../Profile/Visits'
 import Liked from '../Profile/Liked'
+import PaymentDetail from '../Profile/PaymentDetail';
+import { useParams } from 'react-router-dom';
 
 const ProfileNavigation = () => {
   const [activeTab, setActiveTab] = useState(1);
+  const { eventContributorId } = useParams();
   return (
     <>
     <div className="bg-[#ebeef2] p-2 flex space-x-4">
@@ -44,6 +47,21 @@ const ProfileNavigation = () => {
           <Heart size={16} />
           Liked
         </button>
+        
+        {!eventContributorId && (
+  <button
+    onClick={() => setActiveTab(4)}
+    className={`w-[150px] h-[30px] flex items-center justify-center gap-2 rounded-[10px] border-0 cursor-pointer transition-all ${
+      activeTab === 4
+        ? "bg-blue-600 text-white"
+        : "bg-white text-black hover:shadow-[2px_4px_8px_hsl(286,36%,58%,0.5)]"
+    }`}
+  >
+    Payment Detail
+  </button>
+)}
+
+
     </div>
 
     {/*showing the content  */}
@@ -55,6 +73,9 @@ const ProfileNavigation = () => {
     )}
     {activeTab === 3 && (
       <Liked />
+    )}
+    {activeTab === 4 && (
+      <PaymentDetail />
     )}
     </>
   )

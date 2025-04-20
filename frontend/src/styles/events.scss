@@ -6,6 +6,7 @@ $shadow-alpha: 0.5;
 
 // Corrected HSLA usage
 $shadow-elevation-medium: 2px 4px 8px hsla($shadow-hue, $shadow-saturation, $shadow-lightness, $shadow-alpha);
+@import url('https://fonts.googleapis.com/css2?family=Inter:wght@600&display=swap');
 
 // Global Styles
 * {
@@ -25,7 +26,20 @@ body {
   justify-content: center;
   align-items: center;
   margin: 25px 0;
+
+  h2 {
+    font-family: 'Inter', sans-serif;
+    font-size: 2rem;
+    font-weight: 600;
+    color: #1f2937;
+    /* Dark gray */
+    margin-bottom: 1rem;
+    text-align: center;
+    letter-spacing: 0.5px;
+    line-height: 1.3;
+  }
 }
+
 
 // Main Container
 .main-container {
@@ -40,12 +54,10 @@ body {
 .main-container-first {
   width: 250px;
   height: 350px; // Increased height to accommodate text & buttons
-  background: linear-gradient(
-    90deg,
-    rgba(2, 0, 36, 1) 0%,
-    rgba(9, 9, 121, 1) 35%,
-    rgba(0, 212, 255, 1) 100%
-  );
+  background: linear-gradient(90deg,
+      rgba(2, 0, 36, 1) 0%,
+      rgba(9, 9, 121, 1) 35%,
+      rgba(0, 212, 255, 1) 100%);
   border-radius: 10px;
   overflow: hidden;
   display: flex;
@@ -105,10 +117,11 @@ body {
   align-items: center;
 }
 
-.update{
+.update {
   display: flex;
   justify-content: space-between;
 }
+
 // Buttons
 .update-btn {
   background: orange;

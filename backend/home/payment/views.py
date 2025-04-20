@@ -169,3 +169,23 @@ def change_payment_status(request):
         return Response({'message': 'Payment status changed.'}, status=status.HTTP_200_OK)
     except Payment.DoesNotExist:
         return Response({'error': 'Invalid email or code.'}, status=status.HTTP_404_NOT_FOUND)
+
+class PaymentDetailPagination(CursorPagination):
+    page_size = 20
+    ordering = 'payment_id'
+    cursor_query_param = 'payments'
+
+# get all the payment list of logged in user 
+@api_view(['GET'])
+def get_payment_detail(request, user_id):
+    try:
+        payment_list = Payment.objects.filter(user=user_id).order_by('-payment_id')
+        
+        paginator = PaymentDetailPagination()
+        paginated_payments = paginator.paginate_queryset(payment_list, request)
+        
+        serializer = PaymentSerializer(paginated_payments, many=True)
+        return paginator.get_paginated_response(serializer.data)
+
+    except Payment.DoesNotExist:
+        return Response({'msg': "User not found"}, status=404)
