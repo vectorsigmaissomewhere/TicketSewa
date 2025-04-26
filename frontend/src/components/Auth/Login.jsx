@@ -1,12 +1,12 @@
 import React, { useState } from "react";
 import axios from "axios";
 import { Link, useNavigate } from 'react-router-dom';
+import { toast } from 'react-toastify'; // 👈 add this
+import 'react-toastify/dist/ReactToastify.css'; // 👈 import the CSS
 
 const Login = () => {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
-  const [message, setMessage] = useState("");
-  const [errorMessage, setErrorMessage] = useState("");
   const [errors, setErrors] = useState({});
   const navigate = useNavigate();
 
@@ -23,17 +23,19 @@ const Login = () => {
       .then((response) => {
         setEmail("");
         setPassword("");
-        setErrorMessage("");
-        setMessage("Login Successful");
         setErrors({});
         console.log("User logged in successfully:", response.data);
-        const { token, user} = response.data;
+
+        const { token } = response.data;
         localStorage.setItem('authToken', token.access);
-        navigate('/')
+
+        toast.success("Login Successful!"); // 👈 toast success
+
+        navigate('/');
       })
       .catch((error) => {
         console.error("Error during login:", error);
-        setErrorMessage("Login failed. Please check your credentials.");
+        toast.error("Login failed. Please check your credentials."); // 👈 toast error
         if (error.response && error.response.data) {
           setErrors(error.response.data);
         }
@@ -66,22 +68,7 @@ const Login = () => {
               Sign Up
             </a></Link>
           </p>
-          {message && (
-            <div
-              className="bg-green-100 border border-green-400 text-green-700 px-4 py-3 rounded relative mb-4"
-              role="alert"
-            >
-              <span>{message}</span>
-            </div>
-          )}
-          {errorMessage && (
-            <div
-              className="bg-red-100 border border-red-400 text-red-700 px-4 py-3 rounded relative mb-4"
-              role="alert"
-            >
-              <span>{errorMessage}</span>
-            </div>
-          )}
+          {/*
           {errors && (
             <ul className="mb-4">
               {Object.keys(errors).map((key, index) => (
@@ -91,6 +78,8 @@ const Login = () => {
               ))}
             </ul>
           )}
+          */}
+
           <form onSubmit={handleSubmit}>
             <div className="mb-4">
               <label htmlFor="email" className="block text-sm font-bold mb-2">
@@ -107,10 +96,7 @@ const Login = () => {
               />
             </div>
             <div className="mb-4">
-              <label
-                htmlFor="password"
-                className="block text-sm font-bold mb-2"
-              >
+              <label htmlFor="password" className="block text-sm font-bold mb-2">
                 Password
               </label>
               <input
@@ -153,3 +139,4 @@ const Login = () => {
 };
 
 export default Login;
+

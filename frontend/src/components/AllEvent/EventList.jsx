@@ -187,17 +187,21 @@ const EventList = () => {
                       📅 {new Date(event.date).toDateString()} - {event.time}
                     </div>
                   </div>
-                  <div>
-                    <button onClick={() => handleCheckContributor(event.user)}>Check Contributor</button>
+
+                  <div className="action-buttons">
+                    <button onClick={() => handleCheckContributor(event.user)}>
+                      Check Contributor
+                    </button>
+                    <div className="like">
+                      <Heart
+                        size={24}
+                        color={likedEvents.includes(event.event_id) ? "red" : "gray"}
+                        onClick={() => handleLike(event.event_id)}
+                        style={{ cursor: "pointer" }}
+                      />
+                    </div>
                   </div>
-                  <div className="like">
-                    <Heart
-                      size={24}
-                      color={likedEvents.includes(event.event_id) ? "red" : "gray"}
-                      onClick={() => handleLike(event.event_id)}
-                      style={{ cursor: "pointer" }}
-                    />
-                  </div>
+
                   <button
                     className="event-btn"
                     onClick={() => navigate(`/eventdetail/${event.event_id}`)}
@@ -205,6 +209,7 @@ const EventList = () => {
                     View Event Details
                   </button>
                 </div>
+
               </div>
             ))
           )}
@@ -217,8 +222,8 @@ const EventList = () => {
             onClick={handlePrevious}
             disabled={!prevPage}
             className={`transition duration-300 ease-in-out transform hover:scale-105 hover:shadow-lg px-4 py-2 rounded-full font-semibold text-white ${prevPage
-                ? "bg-gradient-to-r from-purple-500 to-pink-500 hover:from-purple-600 hover:to-pink-600"
-                : "bg-gray-400 cursor-not-allowed"
+              ? "bg-gradient-to-r from-purple-500 to-pink-500 hover:from-purple-600 hover:to-pink-600"
+              : "bg-gray-400 cursor-not-allowed"
               }`}
           >
             ← Previous
@@ -227,8 +232,8 @@ const EventList = () => {
             onClick={handleNext}
             disabled={!nextPage}
             className={`transition duration-300 ease-in-out transform hover:scale-105 hover:shadow-lg px-4 py-2 rounded-full font-semibold text-white ${nextPage
-                ? "bg-gradient-to-r from-green-400 to-blue-500 hover:from-green-500 hover:to-blue-600"
-                : "bg-gray-400 cursor-not-allowed"
+              ? "bg-gradient-to-r from-green-400 to-blue-500 hover:from-green-500 hover:to-blue-600"
+              : "bg-gray-400 cursor-not-allowed"
               }`}
           >
             Next →

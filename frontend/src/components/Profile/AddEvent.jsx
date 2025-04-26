@@ -3,6 +3,11 @@ import { X } from "lucide-react";
 import '../../styles/addevent.scss';
 import axios from 'axios';
 import { decodeToken } from '../../Utils/authtoken';
+import { toast } from 'react-toastify';
+import 'react-toastify/dist/ReactToastify.css';
+import 'leaflet/dist/leaflet.css';
+import { MapContainer, TileLayer, Marker, useMapEvents } from 'react-leaflet'; // 👈 Added this
+
 
 const AddEvent = () => {
     const [isPopupVisible, setIsPopupVisible] = useState(false);
@@ -74,12 +79,43 @@ const AddEvent = () => {
                     Authorization: `Bearer ${token}`,
                 },
             });
-            alert("Event created successfully!");
+            toast.success("Event Added Successfully");
             setIsPopupVisible(false);
+            setFormData({
+                user: userId,
+                name: "",
+                description: "",
+                event_type: "",
+                event_image: null,
+                country: "",
+                city: "",
+                latitude: "",
+                longitude: "",
+                address: "",
+                date: "",
+                time: "",
+                ticket_active: false,
+                max_tickets: "",
+                is_featured: false
+            });
         } catch (error) {
             console.error("Error creating event:", error.response?.data || error.message);
+            toast.error("Login failed. Please check your credentials.");
         }
     };
+    const LocationMarker = () => {
+        useMapEvents({
+            click(e) {
+                setFormData((prevData) => ({
+                    ...prevData,
+                    latitude: e.latlng.lat,
+                    longitude: e.latlng.lng,
+                }));
+            },
+        });
+        return null;
+    };
+    
 
     return (
         <>
@@ -123,11 +159,32 @@ const AddEvent = () => {
                             <input name="city" type='text' value={formData.city} onChange={handleInputChange} required />
                         </div>
                         <div className='add-event-form-inner'>
-                            <label>Longitude</label>
-                            <input name="longitude" type='text' value={formData.longitude} onChange={handleInputChange} required />
+                            <label>Select Location on Map</label>
+                            <div style={{ height: "300px", marginBottom: "1rem" }}>
+                                <MapContainer
+                                    center={[27.7172, 85.3240]}
+                                    zoom={13}
+                                    style={{ height: "100%", width: "100%" }}
+                                >
+                                    <TileLayer
+                                        attribution='&copy; <a href="http://osm.org/copyright">OpenStreetMap</a> contributors'
+                                        url="https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png"
+                                    />
+                                    {formData.latitude && formData.longitude && (
+                                        <Marker position={[formData.latitude, formData.longitude]} />
+                                    )}
+                                    <LocationMarker /> {/* 👈 Added */}
+                                </MapContainer>
+
+                            </div>
+
                             <label>Latitude</label>
-                            <input name="latitude" type='text' value={formData.latitude} onChange={handleInputChange} required />
+                            <input name="latitude" type="text" value={formData.latitude} onChange={handleInputChange} required />
+
+                            <label>Longitude</label>
+                            <input name="longitude" type="text" value={formData.longitude} onChange={handleInputChange} required />
                         </div>
+
                         <div className='add-event-form-inner'>
                             <label>Address</label>
                             <input name="address" type='text' value={formData.address} onChange={handleInputChange} />

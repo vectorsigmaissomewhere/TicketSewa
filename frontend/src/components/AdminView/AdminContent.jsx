@@ -506,7 +506,7 @@ const AdminContent = () => {
                                         */}
                                         <td className="px-6 py-4">
                                             <button onClick={() => handleStatusChange(payment.email)} className="text-black">
-                                                Change Status to {payment.status === 1 ? "IN" : "OUT"}
+                                                Change Status to {payment.status === 1 ? "OUT" : "IN"}
                                             </button>
                                         </td>
                                     </tr>

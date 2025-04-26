@@ -174,7 +174,14 @@ class LikeViewSet(viewsets.ViewSet):
         # Check if the user already liked this event
         if Like.objects.filter(user=user, event_id=event_id).exists():
             return Response({"msg": "You have already liked this event"}, status=status.HTTP_400_BAD_REQUEST)
-
+        
+        try:
+            event = Event.objects.get(event_id=event_id)
+        except Event.DoesNotExist:
+            return Response({"msg": "Event does not exist"}, status=status.HTTP_404_NOT_FOUND)
+            
+        if event.user == user:
+            return Response({"msg": "You cannot like your own event"}, status=status.HTTP_400_BAD_REQUEST)
         serializer = LikeSerializer(data=request.data)
         if serializer.is_valid():
             serializer.save()

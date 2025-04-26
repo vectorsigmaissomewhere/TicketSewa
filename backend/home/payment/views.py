@@ -172,14 +172,14 @@ def change_payment_status(request):
 
 class PaymentDetailPagination(CursorPagination):
     page_size = 20
-    ordering = 'payment_id'
+    ordering = '-created_at'
     cursor_query_param = 'payments'
 
 # get all the payment list of logged in user 
 @api_view(['GET'])
 def get_payment_detail(request, user_id):
     try:
-        payment_list = Payment.objects.filter(user=user_id).order_by('-payment_id')
+        payment_list = Payment.objects.filter(user=user_id)
         
         paginator = PaymentDetailPagination()
         paginated_payments = paginator.paginate_queryset(payment_list, request)

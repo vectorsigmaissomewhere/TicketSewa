@@ -3,6 +3,7 @@ import axios from 'axios';
 import { Link } from 'react-router-dom';
 import { useParams, useNavigate } from 'react-router-dom';
 import { decodeToken } from '../../Utils/authtoken';
+import { BsThreeDotsVertical } from 'react-icons/bs';
 
 const Profileheading = () => {
   const defaultBg =
@@ -155,11 +156,7 @@ const Profileheading = () => {
           {/* Settings Icon */}
           {!eventContributorId && (
             <div onClick={togglePopup} className="cursor-pointer relative">
-              <img
-                className="w-[20px] h-[15px]"
-                src="https://uxwing.com/wp-content/themes/uxwing/download/web-app-development/3-vertical-dots-icon.png"
-                alt="Menu"
-              />
+              <BsThreeDotsVertical size={20} />
             </div>
           )}
         </div>

@@ -70,6 +70,14 @@ const Navbar = () => {
           <li>
             <a
               href="#"
+              className="block md:inline hover:text-blue-400 transition duration-300" onClick={()=> navigate('/event')}
+            >
+              All Events 
+            </a>
+          </li>
+          <li>
+            <a
+              href="#"
               className="block md:inline hover:text-blue-400 transition duration-300" onClick={()=> handleCategoryClick("concert")}
             >
               Concerts

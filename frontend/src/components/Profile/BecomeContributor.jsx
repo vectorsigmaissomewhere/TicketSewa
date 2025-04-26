@@ -3,6 +3,8 @@ import { BadgeCheck } from "lucide-react";
 import axios from "axios";  
 import '../../styles/becomecontributor.scss';
 import { decodeToken } from '../../Utils/authtoken';
+import { toast } from 'react-toastify'; 
+import 'react-toastify/dist/ReactToastify.css';
 
 const BecomeContributor = () => {
     const [isPopupVisible, setIsPopupVisible] = useState(false);
@@ -57,9 +59,9 @@ const BecomeContributor = () => {
                 license_image: null,
                 government_card: null,
             });
-
-            alert("Contributor request sent successfully!");
+            toast.success("Contributor request sent successfully!");
         } catch (error) {
+            toast.success("Unable to send request!");
             console.error("There is some error:", error);
         } finally {
             console.log("Running the finally code");

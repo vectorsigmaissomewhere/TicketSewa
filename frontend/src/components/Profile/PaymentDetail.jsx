@@ -49,9 +49,9 @@ const PaymentDetail = () => {
             </tr>
           </thead>
           <tbody>
-            {paymentList.map((payment) => (
+            {paymentList.map((payment, index) => (
               <tr key={payment.payment_id} className="bg-white border-b dark:bg-gray-900 dark:border-gray-700">
-                <td className="px-6 py-4">{payment.payment_id}</td>
+                <td className="px-6 py-4">{index+1}</td>
                 <td className="px-6 py-4">{payment.event_name}</td>
                 <td className="px-6 py-4">{payment.amount}</td>
                 <td className="px-6 py-4">{payment.name}</td>

@@ -53,7 +53,8 @@ body {
 // Card Styles
 .main-container-first {
   width: 250px;
-  height: 350px; // Increased height to accommodate text & buttons
+  height: auto; // Increased height to accommodate text & buttons
+  min-height: 150px;
   background: linear-gradient(90deg,
       rgba(2, 0, 36, 1) 0%,
       rgba(9, 9, 121, 1) 35%,
@@ -65,18 +66,18 @@ body {
   color: white;
   position: relative;
   transition: transform 0.3s ease-in-out;
-
-  &:hover {
-    transform: scale(1.1);
-    box-shadow: $shadow-elevation-medium;
-    cursor: pointer;
-  }
+  //
+  //&:hover {
+  //  transform: scale(1.1);
+  //  box-shadow: $shadow-elevation-medium;
+  //  cursor: pointer;
+  //}
 }
 
 // Image Container
 .main-container-image {
   width: 100%;
-  height: 60%; // Takes up 60% of the div
+  height: 210px; // Takes up 60% of the div
 
   img {
     width: 100%;
@@ -145,6 +146,7 @@ body {
   border-radius: 5px;
   margin-top: 5px;
 }
+
 
 // Responsive Fix
 @media (max-width: 600px) {

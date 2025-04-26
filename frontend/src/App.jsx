@@ -17,10 +17,14 @@ import Rate from './components/EventDetail/Rate';
 import AdminView from './components/AdminView/AdminView';
 import ChangeStatusComponent from './components/AdminView/ChangeStatusComponent';
 import Faq from './components/Home/Faq';
+import { ToastContainer } from 'react-toastify';
+import 'react-toastify/dist/ReactToastify.css';
 
 const App = () => {
   return (
+    <>
     <Router>
+    <ToastContainer position="top-right" />
       <Routes>
         <Route path='/' element={<Home />} />
         <Route path='/signup' element={<Signup />} />
@@ -42,6 +46,7 @@ const App = () => {
         <Route path="/faq" element={<Faq/>}/>
       </Routes>
     </Router>
+    </>
   );
 }
 
