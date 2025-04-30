@@ -3,6 +3,8 @@ import '../../styles/accountsetting.scss';
 import { Link } from 'react-router-dom';
 import { decodeToken } from '../../Utils/authtoken';
 import axios from 'axios';
+import { toast } from 'react-toastify';
+import 'react-toastify/dist/ReactToastify.css';
 
 const AccountPublicProfile = () => {
   const [profileDetail, setProfileDetail] = useState({
@@ -52,7 +54,7 @@ const AccountPublicProfile = () => {
       })
       .then((response) => {
         setProfileDetail(response.data);
-        alert('Profile updated successfully!');
+        toast.success("Profile updated Successfully");
       })
       .catch((error) => {
         console.error(error);
@@ -92,14 +94,6 @@ const AccountPublicProfile = () => {
         </div>
         <div className="profile-navigation-details">
           <h2>Public Profile</h2>
-          <div className="profile-picture">
-            <label>Profile Picture</label>
-            <img className="profile-picture-main" src="https://static.vecteezy.com/system/resources/thumbnails/033/889/256/small/sunset-on-the-sea-shore-generated-by-ai-photo.jpg" alt="Profile Image" />
-            <label htmlFor="file-upload" className="editicon-label">
-              <img className="editicon" src="https://w7.pngwing.com/pngs/122/880/png-transparent-letter-mail-mailing-email-mailbox-inbox-thumbnail.png" alt="Upload Image" />
-            </label>
-            <input type="file" id="file-upload" name="file-upload" accept="image/*" style={{ display: "none" }} />
-          </div>
 
           <form onSubmit={handleSubmit}>
             <div className="public-name">

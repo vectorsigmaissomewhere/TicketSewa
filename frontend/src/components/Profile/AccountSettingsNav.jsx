@@ -2,6 +2,8 @@ import React, { useState } from 'react';
 import '../../styles/accountsetting.scss';
 import { Link } from 'react-router-dom';
 import { decodeToken } from '../../Utils/authtoken';
+import { toast } from 'react-toastify';
+import 'react-toastify/dist/ReactToastify.css';
 
 const AccountSettingsNav = () => {
   const [email, setEmail] = useState('');
@@ -33,7 +35,8 @@ const AccountSettingsNav = () => {
 
       const data = await response.json();
       if (response.ok) {
-        setMessage("Password Changed Successfully");
+        toast.success("Password Changed Successfully");
+        //setMessage("Password Changed Successfully");
       } else {
         setMessage(data.error || "Something went wrong");
       }
@@ -54,7 +57,8 @@ const AccountSettingsNav = () => {
       });
       const data = await response.json();
       if (response.ok) {
-        setMessage('Email Updated Successfully');
+        toast.success("Email Updated Successfully");
+        //setMessage('Email Updated Successfully');
         setEmail(newEmail);
       } else {
         setMessage(data.error || 'Something went wrong');

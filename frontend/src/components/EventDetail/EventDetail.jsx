@@ -10,6 +10,8 @@ import Rate from './Rate';
 import Footer from '../Home/Footer'
 import Profileheading from '../Profile/Profileheading'
 import Navbar from "../Home/Navbar";
+import { toast } from 'react-toastify'; // 👈 add this
+import 'react-toastify/dist/ReactToastify.css';
 
 const EventDetail = () => {
   const { eventId } = useParams();  // Extract eventId from the URL
@@ -269,6 +271,7 @@ const EventDetail = () => {
       const data = await response.json();
       if (response.ok) {
         setEventComment('');
+        toast.success("Comment Added Successfully");
         setMessage("Comment Added Successfully");
       } else {
         setMessage(data.error || "Something went wrong");

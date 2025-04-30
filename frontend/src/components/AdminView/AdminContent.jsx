@@ -11,6 +11,8 @@ import {
     Tooltip,
     ResponsiveContainer
 } from 'recharts';
+import { toast } from 'react-toastify'; // 👈 add this
+import 'react-toastify/dist/ReactToastify.css';
 
 
 const AdminContent = () => {
@@ -76,7 +78,8 @@ const AdminContent = () => {
             });
             const data = await response.json();
             if (response.ok) {
-                setMessage("Ticket Added Successfully");
+                toast.success("Ticket Added Successfully");
+                //setMessage("Ticket Added Successfully");
             } else {
                 setMessage(data.error || "Something went wrong");
             }
@@ -210,7 +213,8 @@ const AdminContent = () => {
                     Authorization: `Bearer ${token}`,
                 },
             });
-            alert("Event updated successfully!");
+            toast.success("Event Update Successfully!");
+            //alert("Event updated successfully!");
         } catch (error) {
             console.error("Error updating event:", error.response?.data || error.message);
         }

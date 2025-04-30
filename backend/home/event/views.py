@@ -367,6 +367,14 @@ class RateModelViewSet(viewsets.ViewSet):
                 status=status.HTTP_201_CREATED
             )
         return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+    def list(self, request):
+        event_id = request.query_params.get('event_id')
+        if not event_id:
+            return Response({'error': 'event_id query parameter is required.'}, status=status.HTTP_400_BAD_REQUEST)
+        
+        ratings = Rate.objects.filter(event__id=event_id)
+        serializer = RateSerializer(ratings, many=True)
+        return Response(serializer.data, status=status.HTTP_200_OK)
 
 # get the average rating according to the event_id 
 @api_view(['GET'])
