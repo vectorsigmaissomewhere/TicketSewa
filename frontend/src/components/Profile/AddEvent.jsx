@@ -208,10 +208,11 @@ const AddEvent = () => {
                             <label>Capacity</label>
                             <input name="max_tickets" type='number' value={formData.max_tickets} onChange={handleInputChange} />
                         </div>
+                        {/*
                         <div className='add-event-form-inner'>
                             <label>Featured Event</label>
                             <input name="is_featured" type='checkbox' checked={formData.is_featured} onChange={handleInputChange} />
-                        </div>
+                        </div>*/}
                         <button className="bg-blue-500 text-white text-lg font-semibold py-2 px-4 rounded-lg cursor-pointer mt-2.5 transition-all duration-300 ease-in-out transform hover:bg-blue-700 hover:scale-105">
                             Submit
                         </button>

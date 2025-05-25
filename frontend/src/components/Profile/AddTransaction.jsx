@@ -16,14 +16,12 @@ const AddTransaction = () => {
               <img src="https://e7.pngegg.com/pngimages/442/477/png-clipart-computer-icons-user-profile-avatar-profile-heroes-profile.png" alt="Profile Icon" />
               Account
             </button></Link>
+            {/*
             <Link to={"/settings/transaction"}><button className="transaction-button" style={{ backgroundColor: "#e0e0e0" }}>
               <img src="https://e7.pngegg.com/pngimages/442/477/png-clipart-computer-icons-user-profile-avatar-profile-heroes-profile.png" alt="Profile Icon" />
               Transaction
             </button></Link>
-            <Link to={"/settings/moderator"}><button className="moderator-button">
-              <img src="https://e7.pngegg.com/pngimages/442/477/png-clipart-computer-icons-user-profile-avatar-profile-heroes-profile.png" alt="Profile Icon" />
-              Add Moderator
-            </button></Link>
+            */}
         </div>
         <div className="profile-navigation-details">
           <h2>Add Transaction</h2>

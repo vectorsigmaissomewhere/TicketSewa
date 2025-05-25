@@ -80,14 +80,11 @@ const AccountSettingsNav = () => {
           <img src="https://e7.pngegg.com/pngimages/442/477/png-clipart-computer-icons-user-profile-avatar-profile-heroes-profile.png" alt="Profile Icon" />
           Account
         </button></Link>
+        {/*
         <Link to={"/settings/transaction"}><button className="transaction-button">
           <img src="https://e7.pngegg.com/pngimages/442/477/png-clipart-computer-icons-user-profile-avatar-profile-heroes-profile.png" alt="Profile Icon" />
           Transaction
-        </button></Link>
-        <Link to={"/settings/moderator"}><button className="moderator-button">
-          <img src="https://e7.pngegg.com/pngimages/442/477/png-clipart-computer-icons-user-profile-avatar-profile-heroes-profile.png" alt="Profile Icon" />
-          Add Moderator
-        </button></Link>
+        </button></Link>*/}
       </div>
 
       <div className="profile-navigation-details">

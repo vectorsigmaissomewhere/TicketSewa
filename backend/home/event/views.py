@@ -134,7 +134,8 @@ def recommend_events(request, user_id):
             "time": event.time,
             "image": event.event_image.url if event.event_image else None,
         })
-
+    print("=============This is the data from events======================")
+    print(results)
     return Response({"events": results})
 
 """

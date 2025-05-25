@@ -74,6 +74,7 @@ const Visits = () => {
         setLikedEvents((prev) => [...prev, eventId]);
       }
     } catch (error) {
+      toast.error("Error liking event");
       console.error("Error liking event:", error);
     }
   };

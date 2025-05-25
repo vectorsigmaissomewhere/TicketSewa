@@ -284,111 +284,111 @@ const EventDetail = () => {
 
   return (
     <>
-    <Navbar/>
-    <div className="bg-gray-100 min-h-screen">
-      {/* Event Header */}
-      <div className="relative bg-blue-900 text-white p-6">
-        <div className="max-w-4xl mx-auto flex flex-col md:flex-row gap-6">
-          {/* Conditionally render the event image */}
-          {event_image && (
-            <img
-              src={fullImageURL}
-              alt={name}
-              className="w-full md:w-1/3 rounded-lg shadow-lg"
-            />
-          )}
-          <div className="flex-1">
-            <h1 className="text-2xl font-bold">{name}</h1>
-            <p className="mt-2">📅 {new Date(date).toDateString()} | 🕒 {time}</p>
-            <p className="mt-1">📍 {address || `${city}, ${country}`}</p>
-            <div className="mt-4 flex items-center gap-4">
-              <span className="text-lg font-semibold">
-                {ticket_active ? "Active" : "Inactive"} | Max Tickets: {max_tickets}
-              </span>
-              <button className="bg-pink-500 hover:bg-pink-600 text-white px-6 py-2 rounded-lg" onClick={() => setOpenPopup(true)}>
-                Book Now
-              </button>
+      <Navbar />
+      <div className="bg-gray-100 min-h-screen">
+        {/* Event Header */}
+        <div className="relative bg-blue-900 text-white p-6">
+          <div className="max-w-4xl mx-auto flex flex-col md:flex-row gap-6">
+            {/* Conditionally render the event image */}
+            {event_image && (
+              <img
+                src={fullImageURL}
+                alt={name}
+                className="w-full md:w-1/3 rounded-lg shadow-lg"
+              />
+            )}
+            <div className="flex-1">
+              <h1 className="text-2xl font-bold">{name}</h1>
+              <p className="mt-2">📅 {new Date(date).toDateString()} | 🕒 {time}</p>
+              <p className="mt-1">📍 {address || `${city}, ${country}`}</p>
+              <div className="mt-4 flex items-center gap-4">
+                <span className="text-lg font-semibold">
+                  {ticket_active ? "Active" : "Inactive"} | Max Tickets: {max_tickets}
+                </span>
+                <button className="bg-pink-500 hover:bg-pink-600 text-white px-6 py-2 rounded-lg" onClick={() => setOpenPopup(true)}>
+                  Book Now
+                </button>
 
-              {openPopup && (
-                <div className="fixed inset-0 flex items-center justify-center bg-black bg-opacity-50 z-20">
-                  <div className="rounded-md p-6 bg-white text-black w-5/6 md:w-1/3 h-[80vh] overflow-y-auto">
-                    <div className="flex flex-row justify-between">
-                      <h2 className="font-sans text-2xl font-bold">Payment</h2>
-                      <button onClick={() => setOpenPopup(false)}>X</button>
-                    </div>
+                {openPopup && (
+                  <div className="fixed inset-0 z-50 flex items-center justify-center bg-black bg-opacity-50">
+                    <div className="rounded-md p-6 bg-white text-black w-5/6 md:w-1/3 h-[80vh] overflow-y-auto">
+                      <div className="flex flex-row justify-between">
+                        <h2 className="font-sans text-2xl font-bold">Payment</h2>
+                        <button onClick={() => setOpenPopup(false)}>X</button>
+                      </div>
 
-                    {tickets.length === 0 ? (
-                      <p>No tickets found</p>
-                    ) : (
-                      tickets.map((ticket) => (
-                        <div key={ticket.ticket_id} className="flex flex-col mt-4 border-b pb-4">
-                          <div className="flex flex-row justify-between">
-                            <h2 className="font-sans text-xl font-semibold">
-                              Ticket Type: {ticket.ticket_type}
-                            </h2>
-                            <h2 className="font-sans text-xl font-bold">Rs: {ticket.ticket_price}</h2>
+                      {tickets.length === 0 ? (
+                        <p>No tickets found</p>
+                      ) : (
+                        tickets.map((ticket) => (
+                          <div key={ticket.ticket_id} className="flex flex-col mt-4 border-b pb-4">
+                            <div className="flex flex-row justify-between">
+                              <h2 className="font-sans text-xl font-semibold">
+                                Ticket Type: {ticket.ticket_type}
+                              </h2>
+                              <h2 className="font-sans text-xl font-bold">Rs: {ticket.ticket_price}</h2>
+                            </div>
+                            <button className="w-full mt-4 bg-green-500 hover:bg-pink-600 text-white px-6 py-2 rounded-lg" onClick={() => handlePayment(ticket.ticket_id, ticket.ticket_type, ticket.ticket_price)}>
+                              Pay
+                            </button>
                           </div>
-                          <button className="w-full mt-4 bg-green-500 hover:bg-pink-600 text-white px-6 py-2 rounded-lg" onClick={() => handlePayment(ticket.ticket_id, ticket.ticket_type, ticket.ticket_price)}>
-                            Pay
-                          </button>
-                        </div>
-                      ))
-                    )}
+                        ))
+                      )}
+                    </div>
                   </div>
-                </div>
-              )}
+                )}
 
-            </div>
-            {/* You can do rating */}
-            <div>
-              <div className="flex items-center mt-2">
-                {Array.from({ length: 5 }, (_, i) => (
-                  <span key={i} className={i < eventrate ? "text-yellow-500" : "text-gray-300"}>
-                    ★
-                  </span>
-                ))}
-                <span className="ml-2 text-sm text-gray-600">(Rating)</span>
+              </div>
+              {/* You can do rating */}
+              <div>
+                <div className="flex items-center mt-2">
+                  {Array.from({ length: 5 }, (_, i) => (
+                    <span key={i} className={i < eventrate ? "text-yellow-500" : "text-gray-300"}>
+                      ★
+                    </span>
+                  ))}
+                  <span className="ml-2 text-sm text-gray-600">(Rating)</span>
+                </div>
               </div>
             </div>
           </div>
         </div>
-      </div>
 
-      {/* Event Description */}
-      {description && (
-        <div className="max-w-4xl mx-auto p-6 bg-white mt-6 rounded-lg shadow-lg">
-          <h2 className="text-xl font-semibold">Event Details</h2>
-          <p className="mt-2 text-gray-700">{description}</p>
+        {/* Event Description */}
+        {description && (
+          <div className="max-w-4xl mx-auto p-6 bg-white mt-6 rounded-lg shadow-lg">
+            <h2 className="text-xl font-semibold">Event Details</h2>
+            <p className="mt-2 text-gray-700">{description}</p>
+          </div>
+        )}
+
+        {/* Organizer Info - You can show the user data or static placeholder */}
+        <div className="max-w-4xl mx-auto p-6 bg-white mt-6 rounded-lg shadow-lg flex items-center gap-4">
+          {/*<img src="/khalti-logo.png" alt="Organizer" className="w-12 h-12 rounded-full" /> */}
+          <div>
+            <p className="font-semibold">{username ? `Organizer Name: ${username}` : "Organizer Info"}</p>
+            <p className="text-sm text-gray-500">{location}</p>
+          </div>
         </div>
-      )}
 
-      {/* Organizer Info - You can show the user data or static placeholder */}
-      <div className="max-w-4xl mx-auto p-6 bg-white mt-6 rounded-lg shadow-lg flex items-center gap-4">
-        {/*<img src="/khalti-logo.png" alt="Organizer" className="w-12 h-12 rounded-full" /> */}
-        <div>
-          <p className="font-semibold">{username ? `Organizer Name: ${username}` : "Organizer Info"}</p>
-          <p className="text-sm text-gray-500">{location}</p>
-        </div>
-      </div>
+        {/* Location Map */}
+        {!openPopup && city && country && (
+          <div className="max-w-4xl mx-auto p-6 bg-white mt-6 rounded-lg shadow-lg z-10">
+            <MapContainer
+              center={[latitude, longitude]}
+              zoom={13}
+              style={{ height: "400px", width: "100%" }}
+            >
+              <TileLayer url="https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png" />
+              <Marker position={[latitude, longitude]}>
+                <Popup>Event Location</Popup>
+              </Marker>
+            </MapContainer>
+          </div>
+        )}
 
-      {/* Location Map */}
-      {city && country && (
-        <div className="max-w-4xl mx-auto p-6 bg-white mt-6 rounded-lg shadow-lg z-10">
-          <MapContainer
-            center={[latitude, longitude]}
-            zoom={13}
-            style={{ height: "400px", width: "100%" }}
-          >
-            <TileLayer url="https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png" />
-            <Marker position={[latitude, longitude]}>
-              <Popup>Event Location</Popup>
-            </Marker>
-          </MapContainer>
-        </div>
-      )}
-
-      {/* Terms & Conditions */}
-      {/*
+        {/* Terms & Conditions */}
+        {/*
       <div className="max-w-4xl mx-auto p-6 bg-white mt-6 rounded-lg shadow-lg">
         <h2 className="text-xl font-semibold">Terms & Conditions</h2>
         <ul className="list-disc ml-6 mt-2 text-gray-700">
@@ -400,96 +400,97 @@ const EventDetail = () => {
         </ul>
       </div>
       */}
-      {/*Rate Now */}
-      <div className="max-w-4xl mx-auto p-6 bg-white mt-6 rounded-lg shadow-lg space-y-6">
-        <button className="bg-blue-600 text-white px-4 py-2 rounded hover:bg-blue-700 transition self-start">
-          Rate Now
-        </button>
+        {/*Rate Now */}
+        <div className="max-w-4xl mx-auto p-6 bg-white mt-6 rounded-lg shadow-lg space-y-6">
+          <p className="inline-block text-black font-semibold">
+            Rate Now
+          </p>
 
-        <div className="flex justify-end items-center space-x-4">
-          <Rate eventId={eventId} userId={storedUserId} />
+
+          <div className="flex justify-end items-center space-x-4">
+            <Rate eventId={eventId} userId={storedUserId} />
+          </div>
         </div>
-      </div>
-      {/* Add the comment */}
-      <div className="max-w-4xl mx-auto p-6 bg-white mt-6 rounded-lg shadow-lg space-y-6">
-        <form onSubmit={handleCommentSubmit}>
-          <textarea
-            placeholder="Leave a comment..."
-            className="w-full p-4 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 resize-none"
-            rows={4}
-            value={event_comment}
-            onChange={(e) => setEventComment(e.target.value)}
-            required
-          ></textarea>
-          <div className="flex justify-end mt-2">
-            <button className="bg-blue-600 text-white px-4 py-2 rounded hover:bg-blue-700 transition"
-              type="submit">
-              Submit Comment
+        {/* Add the comment */}
+        <div className="max-w-4xl mx-auto p-6 bg-white mt-6 rounded-lg shadow-lg space-y-6">
+          <form onSubmit={handleCommentSubmit}>
+            <textarea
+              placeholder="Leave a comment..."
+              className="w-full p-4 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 resize-none"
+              rows={4}
+              value={event_comment}
+              onChange={(e) => setEventComment(e.target.value)}
+              required
+            ></textarea>
+            <div className="flex justify-end mt-2">
+              <button className="bg-blue-600 text-white px-4 py-2 rounded hover:bg-blue-700 transition"
+                type="submit">
+                Submit Comment
+              </button>
+            </div>
+          </form>
+        </div>
+
+        {/* List all the comments */}
+        <div className="max-w-4xl mx-auto p-6 bg-white mt-6 rounded-lg shadow-lg space-y-6">
+          <h2 className="text-xl font-bold mb-4">Comments</h2>
+          {eventcommentlist.length === 0 ? (
+            <p className="text-gray-600">No comments yet.</p>
+          ) : (
+            eventcommentlist.slice(0, visibleComments).map((comment, index) => (
+              <div key={index} className="mb-4 border-b pb-2">
+                <p className="text-sm font-semibold text-blue-800">{comment.user_fullname}</p>
+                <p className="text-gray-700 mt-1">{comment.comment || comment.content}</p>
+              </div>
+            ))
+          )}
+        </div>
+        <div className="max-w-4xl mx-auto p-6 mt-6">
+          {eventcommentlist.length > visibleComments && (
+            <button
+              className="mt-2 px-4 py-1 text-sm text-white bg-blue-600 rounded hover:bg-blue-700"
+              onClick={() => setVisibleComments(prev => prev + 5)}
+            >
+              Read More Comments
             </button>
-          </div>
-        </form>
-      </div>
+          )}
+        </div>
 
-      {/* List all the comments */}
-      <div className="max-w-4xl mx-auto p-6 bg-white mt-6 rounded-lg shadow-lg space-y-6">
-        <h2 className="text-xl font-bold mb-4">Comments</h2>
-        {eventcommentlist.length === 0 ? (
-          <p className="text-gray-600">No comments yet.</p>
-        ) : (
-          eventcommentlist.slice(0, visibleComments).map((comment, index) => (
-            <div key={index} className="mb-4 border-b pb-2">
-              <p className="text-sm font-semibold text-blue-800">{comment.user_fullname}</p>
-              <p className="text-gray-700 mt-1">{comment.comment || comment.content}</p>
+        {/* Suggested contents  */}
+        <div className="max-w-4xl mx-auto p-6 bg-white mt-6 rounded-lg shadow-lg">
+          {suggestedEvent && suggestedEvent.length > 0 && (
+            <div className="max-w-4xl mx-auto mt-10 p-6 bg-white shadow-lg rounded-md">
+              <h2 className="text-2xl font-bold mb-4">Suggested Events</h2>
+              <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+                {suggestedEvent.map((event) => (
+                  <div key={event.id} className="bg-gray-100 p-4 rounded-lg shadow">
+                    <img
+                      src={
+                        event.event_image?.startsWith("http")
+                          ? event.event_image
+                          : `${backendURL}${event.event_image}`
+                      }
+                      alt={event.name}
+                      className="w-full h-48 object-cover rounded-md"
+                    />
+                    <h3 className="text-xl font-semibold mt-2">{event.name}</h3>
+                    <p className="text-sm text-gray-600">📍 {event.city}, {event.country}</p>
+                    <p className="text-sm text-gray-600">📅 {new Date(event.date).toDateString()}</p>
+                    <button
+                      onClick={() => navigate(`/eventdetail/${event.event_id}`)}
+                      className="mt-3 bg-blue-600 hover:bg-blue-700 text-white px-4 py-2 rounded"
+                    >
+                      View Details
+                    </button>
+                  </div>
+                ))}
+              </div>
             </div>
-          ))
-        )}
-      </div>
-      <div className="max-w-4xl mx-auto p-6 mt-6">
-      {eventcommentlist.length > visibleComments && (
-        <button
-          className="mt-2 px-4 py-1 text-sm text-white bg-blue-600 rounded hover:bg-blue-700"
-          onClick={() => setVisibleComments(prev => prev + 5)}
-        >
-          Read More Comments
-        </button>
-      )}
-      </div>
+          )}
+        </div>
 
-      {/* Suggested contents  */}
-      <div className="max-w-4xl mx-auto p-6 bg-white mt-6 rounded-lg shadow-lg">
-        {suggestedEvent && suggestedEvent.length > 0 && (
-          <div className="max-w-4xl mx-auto mt-10 p-6 bg-white shadow-lg rounded-md">
-            <h2 className="text-2xl font-bold mb-4">Suggested Events</h2>
-            <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-              {suggestedEvent.map((event) => (
-                <div key={event.id} className="bg-gray-100 p-4 rounded-lg shadow">
-                  <img
-                    src={
-                      event.event_image?.startsWith("http")
-                        ? event.event_image
-                        : `${backendURL}${event.event_image}`
-                    }
-                    alt={event.name}
-                    className="w-full h-48 object-cover rounded-md"
-                  />
-                  <h3 className="text-xl font-semibold mt-2">{event.name}</h3>
-                  <p className="text-sm text-gray-600">📍 {event.city}, {event.country}</p>
-                  <p className="text-sm text-gray-600">📅 {new Date(event.date).toDateString()}</p>
-                  <button
-                    onClick={() => navigate(`/eventdetail/${event.event_id}`)}
-                    className="mt-3 bg-blue-600 hover:bg-blue-700 text-white px-4 py-2 rounded"
-                  >
-                    View Details
-                  </button>
-                </div>
-              ))}
-            </div>
-          </div>
-        )}
-      </div>
-
-    </div >
-    <Footer/>
+      </div >
+      <Footer />
     </>
   );
 };

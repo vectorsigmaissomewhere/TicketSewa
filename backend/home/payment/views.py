@@ -130,7 +130,7 @@ class PaymentDataSaveViewSet(viewsets.ViewSet):
 
 # pagination in paymentlist 
 class MyCursorPagination(CursorPagination):
-    page_size = 20
+    page_size = 1000
     ordering = 'payment_id'
     cursor_query_param = 'transaction'
 

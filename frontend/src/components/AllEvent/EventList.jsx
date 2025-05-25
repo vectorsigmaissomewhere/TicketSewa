@@ -4,6 +4,8 @@ import { Heart } from "lucide-react";
 import { decodeToken } from "../../Utils/authtoken";
 import axios from "axios";
 import { useNavigate, useLocation } from "react-router-dom";
+import { toast } from 'react-toastify';
+import 'react-toastify/dist/ReactToastify.css';
 
 const EventList = () => {
   const location = useLocation();
@@ -94,6 +96,7 @@ const EventList = () => {
         setLikedEvents((prev) => [...prev, eventId]);
       }
     } catch (error) {
+      toast.error("Error liking event");
       console.error("Error liking event:", error);
     }
   };

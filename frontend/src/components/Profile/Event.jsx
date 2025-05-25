@@ -6,7 +6,8 @@ import { decodeToken } from "../../Utils/authtoken";
 import axios from "axios";
 import { useParams, useNavigate } from "react-router-dom";
 import { Heart } from "lucide-react";
-
+import { toast } from 'react-toastify';
+import 'react-toastify/dist/ReactToastify.css';
 
 const Event = () => {
   const token = localStorage.getItem("authToken");
@@ -76,6 +77,7 @@ const Event = () => {
         setLikedEvents((prev) => [...prev, eventId]);
       }
     } catch (error) {
+      toast.error("Error liking event");
       console.error("Error liking event:", error);
     }
   };
